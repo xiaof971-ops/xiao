@@ -1,7 +1,7 @@
 [
   {
     "title": "博客开张：为什么我决定开始写",
-    "url": "posts/hello-world.html",
+    "url": "hello-world.html",
     "tag": "随笔",
     "date": "2026-11-17",
     "summary": "收藏不等于学会，记下不等于想清。写作是一场自我检验，也是这个博客三条规矩的由来。",
@@ -9,7 +9,7 @@
   },
   {
     "title": "和 AI 协作，一个下午搭好这个博客",
-    "url": "posts/build-blog-with-ai.html",
+    "url": "build-blog-with-ai.html",
     "tag": "技术",
     "date": "2026-11-17",
     "summary": "从设计到上线一个下午完成。哪些事交给了 AI，哪些事还是得自己拍板。",
@@ -17,7 +17,7 @@
   },
   {
     "title": "我的效率工具清单（2026 版）",
-    "url": "posts/notes-on-tools.html",
+    "url": "notes-on-tools.html",
     "tag": "工具",
     "date": "2026-11-17",
     "summary": "日常真正高频使用的工具：解决的问题、不可替代之处，以及踩过的坑。",

@@ -32,6 +32,7 @@
                 <a href="index.html" class="active">首页</a>
                 <a href="archive.html">归档</a>
                 <a href="tags.html">标签</a>
+                <a href="game.html">游戏</a>
                 <a href="about.html">关于</a>
                 <button class="nav-search js-search" type="button" aria-label="搜索"><span class="lbl">搜索</span><kbd>/</kbd></button>
             </nav>
@@ -99,6 +100,16 @@
             <a class="tag-chip" href="tags.html#随笔">随笔<span class="cnt">1</span></a>
         </div>
 
+                <div class="section-head">
+            <div class="section-title"><span class="num">04</span>摸鱼时间</div>
+        </div>
+        <a class="featured reveal" href="game.html" style="border-color:rgba(91,157,240,.35)">
+            <span class="featured-tag" style="background:rgba(91,157,240,.12);color:var(--blue)">NEW · 原创小游戏</span>
+            <h2>星际弹弓：一点一放，借引力飞向深空</h2>
+            <p>原创单键物理游戏：小行星绕着引力环旋转，点一下屏幕沿切线放飞——接住下一个引力环就继续爬升。收集星星拿连击、躲尖刺雷，越飞越快，看你能上多少米。</p>
+            <div class="featured-foot"><span>纯网页 · 手机可玩</span><span class="read-cue">开始游戏 →</span></div>
+        </a>
+
         <footer class="site-foot">
             <span>© 2026 ME·WORLD · meworld.me</span>
             <div class="foot-links">
@@ -119,5 +130,35 @@
 
     <button id="back-top" type="button" aria-label="返回顶部">↑</button>
     <script src="site.js" defer></script>
+    <script>
+    /* 微信登录 OAuth 回调分发：回调固定落在站点根路径，接住后清参并跳回游戏页 */
+    (function () {
+        var url = new URL(location.href);
+        if (!url.searchParams.has('code') && !url.searchParams.has('error')) return;
+        var s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js';
+        s.onload = async function () {
+            try {
+                var cloud = window.WorkBuddyCloud.createWorkBuddyCloud({
+                    endpoint: 'https://mp-api.app.workbuddy.host',
+                    oauthRelayBaseUrl: 'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
+                    publishableKey: 'wbpk_Y2NI13dI4oISlHR2If4LQq_hYUq1QWUvUQr7HCOtCvjPGo15RP4Q42m'
+                });
+                var provider = url.searchParams.get('provider');
+                var handler = provider === 'wechat' ? cloud.auth.handleWechatWebCallback
+                    : provider === 'workbuddy' ? cloud.auth.handleWorkBuddyCallback : null;
+                if (typeof handler === 'function') {
+                    await handler.call(cloud.auth);
+                }
+                for (var k of ['code', 'state', 'provider']) url.searchParams.delete(k);
+                history.replaceState(null, '', url.pathname + url.search + url.hash);
+                location.replace('game.html');
+            } catch (e) {
+                location.replace('game.html');
+            }
+        };
+        document.head.appendChild(s);
+    })();
+    </script>
 </body>
 </html>

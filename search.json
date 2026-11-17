@@ -22,5 +22,13 @@
     "date": "2026-11-17",
     "summary": "写与记、开发、日常提速、知识管理四大类，每一件都是高频在用的具体工具。",
     "text": "效率工具 腾讯文档 Notion flomo Obsidian WorkBuddy Claude VS Code GitHub Copilot 终端 Git Postman uTools Raycast Everything Snipaste 滴答清单 知识管理 工具越少越好 一条链路 收集癖 过度自动化 追新"
+  },
+  {
+    "title": "A股温度计",
+    "url": "thermometer.html",
+    "tag": "工具",
+    "date": "2026-11-17",
+    "summary": "每日市场温度 -30°~100°：机会/正常/危险三段；爆量下跌标红，缩量无人问津标蓝。",
+    "text": "A股 温度计 市场 情绪 量比 换手 爆量下跌 放量出货 缩量 无人问津 蓄势 机会 正常 危险 东方财富 实时行情"
   }
 ]

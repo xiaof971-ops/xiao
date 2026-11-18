@@ -214,4 +214,35 @@
             burger.classList.add('active');
         }
     }
+
+    /* ---------- 9. 移动端文章目录（桌面端仍用侧栏 TOC） ---------- */
+    var content9 = $('.article .content');
+    if (content9 && document.querySelector('.toc')) {
+        var heads9 = $$('h2, h3', content9).filter(function (h) { return h.id; });
+        if (heads9.length > 1) {
+            var det = document.createElement('details');
+            det.className = 'toc-mobile';
+            var sum = document.createElement('summary');
+            sum.textContent = '目录 · 本页内容（' + heads9.length + ' 节）';
+            det.appendChild(sum);
+            heads9.forEach(function (h) {
+                var a = document.createElement('a');
+                a.href = '#' + h.id;
+                a.textContent = h.textContent;
+                a.style.paddingLeft = (h.tagName === 'H3') ? '28px' : '14px';
+                det.appendChild(a);
+            });
+            content9.parentNode.insertBefore(det, content9);
+        }
+    }
+
+    /* ---------- 10. 首页统计动态化 ---------- */
+    var statPosts = $('#stat-posts');
+    if (statPosts) {
+        var rows = $$('.post-row').length;
+        if (rows) statPosts.textContent = rows;
+        var chips = $$('.tag-chip').length;
+        var tagStat = document.querySelector('.hero-stats .stat:nth-child(2) .num');
+        if (tagStat && chips) tagStat.textContent = chips;
+    }
 })();

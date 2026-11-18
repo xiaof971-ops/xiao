@@ -2,6 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#0b0d10">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ME·WORLD — 记录、沉淀，然后继续往前走</title>
     <meta name="description" content="ME·WORLD：个人博客。技术笔记、工具与效率、随想随笔——记录做过的事，沉淀想清的道理。">
@@ -28,7 +30,7 @@
             border: 1px solid rgba(239, 83, 80, 0.45);
             border-radius: 999px;
             padding: 9px 18px;
-            margin-top: 14px;
+            margin: -26px 0 6px;
             text-decoration: none;
             color: var(--ink-soft);
             font-size: 13.5px;
@@ -69,14 +71,6 @@
     <div id="progress-bar"></div>
 
     <div class="page">
-        <a class="cctv-strip" href="cctv6.html">
-            <span class="cs-badge">CCTV-6</span>
-            <span class="cs-dot"></span>
-            <strong>六公主</strong>
-            <span class="cs-sub">电影频道实时直播 · 一键直达官方源</span>
-            <span class="cs-arrow">→</span>
-        </a>
-
         <header class="site-head">
             <a class="brand" href="index.html">
                 <span class="brand-mark">ME</span>
@@ -109,6 +103,14 @@
                 <button class="nav-search js-search" type="button" aria-label="搜索"><span class="lbl">搜索</span><kbd>/</kbd></button>
             </nav>
         </header>
+
+        <a class="cctv-strip" href="cctv6.html">
+            <span class="cs-badge">CCTV-6</span>
+            <span class="cs-dot"></span>
+            <strong>六公主</strong>
+            <span class="cs-sub">电影频道实时直播 · 一键直达官方源</span>
+            <span class="cs-arrow">→</span>
+        </a>
 
         <section class="hero">
             <div class="hero-kicker">MEWORLD.ME · PERSONAL BLOG</div>
@@ -173,14 +175,34 @@
         </div>
 
                 <div class="section-head">
-            <div class="section-title"><span class="num">04</span>摸鱼时间</div>
+            <div class="section-title"><span class="num">04</span>玩物丧志 · 娱乐与工具</div>
         </div>
-        <a class="featured reveal" href="game.html" style="border-color:rgba(91,157,240,.35)">
-            <span class="featured-tag" style="background:rgba(91,157,240,.12);color:var(--blue)">NEW · 原创小游戏</span>
-            <h2>星际弹弓：一点一放，借引力飞向深空</h2>
-            <p>原创单键物理游戏：小行星绕着引力环旋转，点一下屏幕沿切线放飞——接住下一个引力环就继续爬升。收集星星拿连击、躲尖刺雷，越飞越快，看你能上多少米。</p>
-            <div class="featured-foot"><span>纯网页 · 手机可玩</span><span class="read-cue">开始游戏 →</span></div>
-        </a>
+        <div class="feature-grid">
+            <a class="featured reveal" href="game.html" style="border-color:rgba(91,157,240,.35)">
+                <span class="featured-tag" style="background:rgba(91,157,240,.12);color:var(--blue)">🎮 原创小游戏</span>
+                <h2>星际弹弓</h2>
+                <p>单键引力弹弓：点一下放飞小行星，接住下一个引力环就继续爬升。收集星星拿连击、躲尖刺雷，看你能上多少米。</p>
+                <div class="featured-foot"><span>纯网页 · 手机可玩</span><span class="read-cue">开始游戏 →</span></div>
+            </a>
+            <a class="featured reveal" href="thermometer.html" style="border-color:rgba(239,83,80,.35)">
+                <span class="featured-tag" style="background:rgba(239,83,80,.12);color:#ef5350">🌡 A股温度计</span>
+                <h2>市场温度实盘扫描</h2>
+                <p>市场温度 -30~100°：爆量下跌标红预警，缩量蓄势标蓝观察；支持个股速查、机会观察池与买卖参考。</p>
+                <div class="featured-foot"><span>盘中 60 秒自动刷新</span><span class="read-cue">看今日温度 →</span></div>
+            </a>
+            <a class="featured reveal" href="deals.html">
+                <span class="featured-tag" style="background:var(--accent-dim);color:var(--accent)">🛍 每日好物</span>
+                <h2>精选清单 + 全网比价</h2>
+                <p>每天轮换主推一件实用好物。任意商品一键直达京东 / 淘宝低价排序，附参考价与慢慢买历史价格曲线入口。</p>
+                <div class="featured-foot"><span>全网搜最低价</span><span class="read-cue">逛今日好物 →</span></div>
+            </a>
+            <a class="featured reveal" href="beauty.html" style="border-color:rgba(91,157,240,.4)">
+                <span class="featured-tag" style="background:rgba(91,157,240,.12);color:var(--blue)">🎨 AI 美图</span>
+                <h2>指令式修图 + 去水印</h2>
+                <p>输入"亮一点""柔肤""胶片感"，智能引擎自动解析成修图参数；涂抹水印区域一键修复。全程本地处理，不上传服务器。</p>
+                <div class="featured-foot"><span>隐私安全 · 即修即下</span><span class="read-cue">上传一张图试试 →</span></div>
+            </a>
+        </div>
 
         <div class="section-head">
             <div class="section-title"><span class="num">05</span>家里的猫</div>
@@ -192,28 +214,14 @@
             <div class="featured-foot"><span>性格白皮书 · 观察记录持续更新</span><span class="read-cue">认识毛毛 →</span></div>
         </a>
 
-        <div class="section-head">
-            <div class="section-title"><span class="num">06</span>每日好物</div>
-        </div>
-        <a class="featured reveal" href="deals.html">
-            <span class="featured-tag" style="background:var(--accent-dim);color:var(--accent)">DAILY PICKS · 每日轮换</span>
-            <h2>每日好物：精选清单 + 一键全网比价</h2>
-            <p>每天轮换主推一件实用好物。顶部搜索框可对任意商品一键直达京东 / 淘宝低价排序，每件商品附图片、参考价、平台链接与慢慢买历史价格曲线入口。</p>
-            <div class="featured-foot"><span>全网搜最低价 · 历史价格查询</span><span class="read-cue">逛今日好物 →</span></div>
-        </a>
-
-        <div class="section-head">
-            <div class="section-title"><span class="num">07</span>AI 美图</div>
-        </div>
-        <a class="featured reveal" href="beauty.html" style="border-color:rgba(91,157,240,.4)">
-            <span class="featured-tag" style="background:rgba(91,157,240,.12);color:var(--blue)">AI STUDIO · 本地处理</span>
-            <h2>AI 美图：输入指令就能修图，还能涂掉水印</h2>
-            <p>上传图片，输入"亮一点""柔肤""胶片感"这样的自然语言指令，智能引擎自动解析成增强参数；涂抹水印区域一键修复。全程浏览器本地处理，图片不上传服务器，处理完直接下载。</p>
-            <div class="featured-foot"><span>指令式美图 · 涂抹去水印 · 隐私安全</span><span class="read-cue">上传一张图试试 →</span></div>
-        </a>
-
         <footer class="site-foot">
-            <span>© 2026 ME·WORLD · meworld.me</span>
+            <div class="foot-brand">
+                <span class="fm">ME</span>
+                <div>
+                    <strong>ME·WORLD</strong>
+                    <p>记录、沉淀，然后继续往前走。</p>
+                </div>
+            </div>
             <div class="foot-links">
                 <a href="feed.xml">RSS</a>
                 <a href="archive.html">归档</a>

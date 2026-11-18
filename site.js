@@ -181,41 +181,37 @@
             .catch(function () { /* 本地预览时忽略 */ });
     }
 
-    /* ---------- 8. 导航分组下拉 ---------- */
-    var drops = $$('.nav-drop');
-    if (drops.length) {
-        var closeDrops = function () {
-            drops.forEach(function (d) { d.classList.remove('open'); });
+    /* ---------- 8. 隐藏式折叠导航（汉堡菜单面板） ---------- */
+    var burger = $('.nav-burger');
+    var panel = $('.nav-panel');
+    if (burger && panel) {
+        var closePanel = function () {
+            panel.classList.remove('open');
+            burger.classList.remove('open');
+            burger.setAttribute('aria-expanded', 'false');
         };
 
-        drops.forEach(function (d) {
-            var btn = $('.drop-btn', d);
-            if (!btn) return;
-            btn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                var wasOpen = d.classList.contains('open');
-                closeDrops();
-                if (!wasOpen) d.classList.add('open');
-            });
-            // 触屏设备：点菜单项前先收起
-            $$('.drop-menu a', d).forEach(function (a) {
-                a.addEventListener('click', closeDrops);
-            });
+        burger.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var willOpen = !panel.classList.contains('open');
+            panel.classList.toggle('open', willOpen);
+            burger.classList.toggle('open', willOpen);
+            burger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
         });
 
-        document.addEventListener('click', function (e) {
-            if (!e.target.closest || !e.target.closest('.nav-drop')) closeDrops();
-        });
-
+        // 点击面板外任意处收起（面板自身点击不冒泡）
+        panel.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.addEventListener('click', closePanel);
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeDrops();
+            if (e.key === 'Escape') closePanel();
         });
 
-        // 当前页在对应分组菜单里高亮
+        // 当前页在面板内 → 金色高亮 + 汉堡按钮加金点
         var here = location.pathname.split('/').pop() || 'index.html';
-        drops.forEach(function (d) {
-            var cur = $('.drop-menu a[href="' + here + '"]', d);
-            if (cur) cur.classList.add('now');
-        });
+        var cur = $('.nav-panel a[href="' + here + '"]');
+        if (cur) {
+            cur.classList.add('now');
+            burger.classList.add('active');
+        }
     }
 })();

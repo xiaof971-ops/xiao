@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>毛毛 — ME·WORLD 镇宅之宝</title>
+    <meta name="description" content="毛毛：本站唯一在编猫员工。12 斤已绝育公猫，主业睡觉，副业干饭，特长被人拍屁股，胆子与体重成反比。">
+    <link rel="canonical" href="https://meworld.me/maomao.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate" type="application/rss+xml" title="ME·WORLD RSS" href="https://meworld.me/feed.xml">
+    <meta property="og:title" content="毛毛 — ME·WORLD 镇宅之宝">
+    <meta property="og:description" content="12 斤已绝育公猫，主业睡觉，副业干饭，特长被人拍屁股，胆子与体重成反比。">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="https://meworld.me/maomao.html">
+    <meta property="og:image" content="https://meworld.me/maomao.jpg">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ---------- 毛毛页专属 ---------- */
+        .cat-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 420px) 1fr;
+            gap: 36px;
+            align-items: center;
+        }
+
+        .cat-photo {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--line-strong);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+        }
+
+        .cat-photo img { display: block; width: 100%; height: auto; }
+
+        .cat-photo .cap {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            padding: 30px 16px 12px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.85);
+            background: linear-gradient(transparent, rgba(0,0,0,0.65));
+        }
+
+        .cat-intro .kicker { font-size: 12px; letter-spacing: 0.2em; color: var(--accent); font-weight: 700; }
+        .cat-intro h1 { margin: 8px 0 14px; }
+
+        .cat-intro p { color: var(--ink-soft); line-height: 1.9; font-size: 15px; margin-top: 10px; }
+
+        .cat-facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 44px;
+        }
+
+        .cat-facts .fact {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 16px 18px;
+        }
+
+        .cat-facts .fact .k { font-size: 11.5px; letter-spacing: 0.08em; color: var(--ink-faint); }
+        .cat-facts .fact .v { margin-top: 6px; font-size: 15px; font-weight: 700; font-family: var(--serif); line-height: 1.6; }
+
+        .story-list { margin-top: 18px; display: grid; gap: 14px; }
+
+        .story-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 22px 26px;
+        }
+
+        .story-card h3 { margin: 0 0 10px; font-size: 17px; }
+        .story-card p { margin: 0; color: var(--ink-soft); line-height: 1.95; font-size: 14.5px; }
+        .story-card .tagline {
+            display: inline-block;
+            margin-bottom: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            background: var(--accent-dim);
+            border-radius: 999px;
+            padding: 3px 12px;
+        }
+
+        .story-card.hl { border-color: rgba(91,157,240,0.4); }
+        .story-card.hl .tagline { color: var(--blue); background: rgba(91,157,240,0.12); }
+
+        .cat-quote {
+            margin-top: 44px;
+            padding: 30px 28px;
+            border-left: 3px solid var(--accent);
+            background: var(--surface);
+            border-radius: 0 16px 16px 0;
+            font-family: var(--serif);
+            font-size: 21px;
+            line-height: 1.7;
+        }
+
+        .cat-quote .by { display: block; margin-top: 10px; font-size: 12.5px; color: var(--ink-faint); font-family: inherit; }
+
+        @media (max-width: 760px) {
+            .cat-hero { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="progress-bar"></div>
+
+    <div class="page">
+        <header class="site-head">
+            <a class="brand" href="index.html">
+                <span class="brand-mark">ME</span>
+                <span class="brand-name">ME·WORLD</span>
+            </a>
+            <nav class="site-nav">
+                <a href="index.html">首页</a>
+                <a href="archive.html">归档</a>
+                <button class="nav-burger" type="button" aria-label="打开菜单" aria-expanded="false">
+                    <span class="burger-icon"><i></i><i></i><i></i></span><span class="lbl">菜单</span>
+                </button>
+                <div class="nav-panel">
+                    <div class="np-inner">
+                        <div class="np-group">
+                            <div class="np-title">栏目</div>
+                            <a href="tags.html">标签</a>
+                            <a href="maomao.html">毛毛</a>
+                            <a href="about.html">关于</a>
+                        </div>
+                        <div class="np-group">
+                            <div class="np-title">娱乐</div>
+                            <a href="game.html">星际弹弓</a>
+                            <a href="cctv6.html">六公主</a>
+                        </div>
+                        <div class="np-group">
+                            <div class="np-title">工具</div>
+                            <a href="thermometer.html">A股温度计</a>
+                            <a href="deals.html">每日好物</a>
+                            <a href="beauty.html">AI 美图</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="nav-search js-search" type="button" aria-label="搜索"><span class="lbl">搜索</span><kbd>/</kbd></button>
+            </nav>
+        </header>
+
+        <a class="back-link" href="index.html">← 返回首页</a>
+
+        <div class="cat-hero">
+            <div class="cat-photo">
+                <img src="maomao.jpg" alt="毛毛：一只纯黑的猫，侧身回望">
+                <div class="cap">毛毛 · 全身照（清醒状态，珍稀素材）</div>
+            </div>
+            <div class="cat-intro">
+                <div class="kicker">MAOMAO · 镇宅之宝</div>
+                <h1>毛毛</h1>
+                <p>毛毛，本站唯一在编的猫员工，职位是<strong>镇宅兼吃穷饲养员</strong>。纯黑，十二斤，已绝育的公猫——体重账面不算轻盈，但他本人坚持那只是"毛蓬"。</p>
+                <p>他的日常极其规律：睁眼、干饭、找人拍屁股、继续睡。对外社交原则是<strong>谁给吃的就跟谁走</strong>，原则性约等于零；但对陌生人，他又怂得出奇——十二斤的块头，胆子大概只有十二克。</p>
+            </div>
+        </div>
+
+        <div class="cat-facts">
+            <div class="fact"><div class="k">姓名</div><div class="v">毛毛（响应率取决于你手里有没有吃的）</div></div>
+            <div class="fact"><div class="k">性别 / 状态</div><div class="v">公 · 已绝育，术后性情愈发佛系</div></div>
+            <div class="fact"><div class="k">体重</div><div class="v">12 斤（微胖界代表，自评"只是毛蓬，不是胖"）</div></div>
+            <div class="fact"><div class="k">毛色</div><div class="v">纯黑，拍照全靠轮廓和一双眼睛</div></div>
+            <div class="fact"><div class="k">主业</div><div class="v">睡觉（日均 16 小时起步）</div></div>
+            <div class="fact"><div class="k">特长</div><div class="v">被人拍屁股（重仓爱好，越拍越翘）</div></div>
+        </div>
+
+        <div class="section-head" style="margin-top:56px">
+            <div class="section-title"><span class="num">§</span>性格白皮书 · 观察记录</div>
+        </div>
+        <div class="story-list">
+            <div class="story-card">
+                <span class="tagline">主业声明</span>
+                <h3>睡觉是主业，吃饭是副业，其余都是插曲</h3>
+                <p>沙发、床、衣柜顶、键盘（尤其主人正在打字的时候），都是他的打卡点位。想拍到一张他睁着眼的清晰照片极其困难——本页这张侧身回望，已经是近期最好的珍稀素材，拍摄耗时约等于拍一组野生雪豹。</p>
+            </div>
+            <div class="story-card">
+                <span class="tagline">重仓爱好</span>
+                <h3>拍屁股，请从轻到重循环播放</h3>
+                <p>在"拍屁股"这件事上，毛毛是全家人意志最坚定的支持者。只要手往那个方向一靠，立刻尾巴竖起、后躯上翘，喉咙里的呼噜声直接拉满，一副"请开始你的表演"的表情。拍到兴起时，他会自己调整角度，配合度满分。</p>
+            </div>
+            <div class="story-card">
+                <span class="tagline">社交策略</span>
+                <h3>干饭式外交：谁给吃的就跟谁走</h3>
+                <p>毛毛有点傻傻的，社交信条只有一条——谁给吃的就跟谁走。饭碗面前没有立场，零食面前没有尊严。家里谁藏了零食他心里门儿清，但从不揭发，只负责提前蹲点，用眼神进行无声的谈判。</p>
+            </div>
+            <div class="story-card">
+                <span class="tagline">反差萌</span>
+                <h3>胆子与体重成反比</h3>
+                <p>十二斤的块头，胆子大概只有十二克。家里来陌生人，秒速消失；来陌生猫，同样秒速消失——目的地固定为床底或衣柜深处。以他的体格完成床底入驻时那套"液压变形"动作，值得逐帧欣赏：收耳、压头、然后像倒进缝隙里一样消失。</p>
+            </div>
+            <div class="story-card hl">
+                <span class="tagline">重大事件</span>
+                <h3>元宝事件 · 一次猫砂盆引发的心理危机</h3>
+                <p>家里曾领养过一只流浪橘猫，名叫元宝。元宝年轻气盛、不懂规矩，直接用了毛毛的猫砂盆——这对毛毛来说无异于主权沦陷。他受到巨大冲击，吓得一整天没敢拉屎、没敢吃饭，蹲在衣柜顶上全程俯瞰局势，眼神里写满了委屈与震惊。后来元宝另有了安排，猫砂盆主权顺利回归，毛毛才慢慢恢复正常作息。此事至今仍是饲养员家的经典谈资。</p>
+            </div>
+        </div>
+
+        <div class="cat-quote">
+            毛毛不凶，他只是怂得很有分量。
+            <span class="by">—— 饲养员手记 · 对毛毛的全部理解浓缩为一句话</span>
+        </div>
+
+        <footer class="site-foot">
+            <span>© 2026 ME·WORLD · meworld.me</span>
+            <div class="foot-links">
+                <a href="feed.xml">RSS</a>
+                <a href="index.html">回首页</a>
+                <a href="about.html">关于我</a>
+            </div>
+        </footer>
+    </div>
+
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-box">
+            <input id="search-input" type="text" placeholder="搜索文章…（标题 / 标签 / 内容）" autocomplete="off">
+            <div class="search-results" id="search-results"></div>
+            <div class="search-hint">按 <kbd>Esc</kbd> 关闭 · <kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 打开</div>
+        </div>
+    </div>
+
+    <button id="back-top" type="button" aria-label="返回顶部">↑</button>
+    <script src="site.js" defer></script>
+</body>
+</html>

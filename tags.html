@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>标签 — ME·WORLD</title>
+    <meta name="description" content="ME·WORLD 文章标签索引：技术、工具、随笔。">
+    <link rel="canonical" href="https://meworld.me/tags.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate" type="application/rss+xml" title="ME·WORLD RSS" href="https://meworld.me/feed.xml">
+    <meta property="og:title" content="标签 — ME·WORLD">
+    <meta property="og:description" content="按标签浏览全部文章。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://meworld.me/tags.html">
+    <meta property="og:image" content="https://meworld.me/og-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="progress-bar"></div>
+
+    <div class="page">
+        <header class="site-head">
+            <a class="brand" href="index.html">
+                <span class="brand-mark">ME</span>
+                <span class="brand-name">ME·WORLD</span>
+            </a>
+            <nav class="site-nav">
+                <a href="index.html">首页</a>
+                <a href="archive.html">归档</a>
+                <button class="nav-burger" type="button" aria-label="打开菜单" aria-expanded="false">
+                    <span class="burger-icon"><i></i><i></i><i></i></span><span class="lbl">菜单</span>
+                </button>
+                <div class="nav-panel">
+                    <div class="np-inner">
+                        <div class="np-group">
+                            <div class="np-title">栏目</div>
+                            <a href="tags.html">标签</a>
+                            <a href="maomao.html">毛毛</a>
+                            <a href="about.html">关于</a>
+                        </div>
+                        <div class="np-group">
+                            <div class="np-title">娱乐</div>
+                            <a href="game.html">星际弹弓</a>
+                            <a href="cctv6.html">六公主</a>
+                        </div>
+                        <div class="np-group">
+                            <div class="np-title">工具</div>
+                            <a href="thermometer.html">A股温度计</a>
+                            <a href="deals.html">每日好物</a>
+                            <a href="beauty.html">AI 美图</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="nav-search js-search" type="button" aria-label="搜索"><span class="lbl">搜索</span><kbd>/</kbd></button>
+            </nav>
+        </header>
+
+        <a class="back-link" href="index.html">← 返回首页</a>
+
+        <div class="section-head" style="margin-top:0">
+            <div class="section-title"><span class="num">T</span>标签 · 点击筛选</div>
+        </div>
+
+        <div class="tag-filter-bar" id="tag-bar">
+            <a class="tag-chip on" href="#全部">全部<span class="cnt">3</span></a>
+            <a class="tag-chip" href="#技术">技术<span class="cnt">1</span></a>
+            <a class="tag-chip" href="#工具">工具<span class="cnt">1</span></a>
+            <a class="tag-chip" href="#随笔">随笔<span class="cnt">1</span></a>
+        </div>
+
+        <div id="tag-list">
+            <a class="archive-item reveal" href="hello-world.html" data-tag="随笔">
+                <span class="d">2026-11-17</span>
+                <span class="t">博客开张：为什么我决定开始写</span>
+                <span class="tag">随笔</span>
+            </a>
+            <a class="archive-item reveal" href="build-blog-with-ai.html" data-tag="技术">
+                <span class="d">2026-11-17</span>
+                <span class="t">和 AI 协作，一个下午搭好这个博客</span>
+                <span class="tag">技术</span>
+            </a>
+            <a class="archive-item reveal" href="notes-on-tools.html" data-tag="工具">
+                <span class="d">2026-11-17</span>
+                <span class="t">我的效率工具清单（2026 版）</span>
+                <span class="tag">工具</span>
+            </a>
+        </div>
+
+        <footer class="site-foot">
+            <span>© 2026 ME·WORLD · meworld.me</span>
+            <div class="foot-links">
+                <a href="feed.xml">RSS</a>
+                <a href="index.html">回首页</a>
+            </div>
+        </footer>
+    </div>
+
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-box">
+            <input id="search-input" type="text" placeholder="搜索文章…（标题 / 标签 / 内容）" autocomplete="off">
+            <div class="search-results" id="search-results"></div>
+            <div class="search-hint">按 <kbd>Esc</kbd> 关闭 · <kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 打开</div>
+        </div>
+    </div>
+
+    <button id="back-top" type="button" aria-label="返回顶部">↑</button>
+    <script src="site.js" defer></script>
+    <script>
+    (function () {
+        var chips = document.querySelectorAll('#tag-bar .tag-chip');
+        var items = document.querySelectorAll('#tag-list .archive-item');
+        function apply(tag) {
+            chips.forEach(function (c) {
+                c.classList.toggle('on', decodeURIComponent(c.getAttribute('href').slice(1)) === tag || (tag === '全部' && c.getAttribute('href') === '#全部'));
+            });
+            items.forEach(function (it) {
+                it.style.display = (tag === '全部' || it.getAttribute('data-tag') === tag) ? '' : 'none';
+            });
+        }
+        function fromHash() {
+            var h = decodeURIComponent(location.hash.replace('#', '')) || '全部';
+            apply(h);
+        }
+        chips.forEach(function (c) {
+            c.addEventListener('click', function () {
+                setTimeout(fromHash, 0);
+            });
+        });
+        window.addEventListener('hashchange', fromHash);
+        fromHash();
+    })();
+    </script>
+</body>
+</html>

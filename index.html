@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ME·WORLD — 记录、沉淀，然后继续往前走</title>
+    <meta name="description" content="ME·WORLD：个人博客。技术笔记、工具与效率、随想随笔——记录做过的事，沉淀想清的道理。">
+    <link rel="canonical" href="https://meworld.me/">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate" type="application/rss+xml" title="ME·WORLD RSS" href="https://meworld.me/feed.xml">
+    <meta property="og:title" content="ME·WORLD — 个人博客">
+    <meta property="og:description" content="记录做过的事，沉淀想清的道理。技术 / 工具 / 随笔。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://meworld.me/">
+    <meta property="og:image" content="https://meworld.me/og-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebSite","name":"ME·WORLD","url":"https://meworld.me/","description":"个人博客：技术笔记、工具与效率、随笔"}
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 六公主顶部模块 */
+        .cctv-strip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface);
+            border: 1px solid rgba(239, 83, 80, 0.45);
+            border-radius: 999px;
+            padding: 9px 18px;
+            margin-top: 14px;
+            text-decoration: none;
+            color: var(--ink-soft);
+            font-size: 13.5px;
+            transition: all 0.15s;
+        }
+
+        .cctv-strip:hover { border-color: #ef5350; background: var(--bg-soft); }
+
+        .cs-badge {
+            background: #ef5350;
+            color: #fff;
+            font-weight: 800;
+            font-size: 11px;
+            border-radius: 6px;
+            padding: 2px 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .cs-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #ef5350;
+            box-shadow: 0 0 6px #ef5350;
+            animation: csblink 1.6s infinite;
+        }
+
+        @keyframes csblink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+        .cctv-strip strong { color: var(--ink); font-size: 14px; }
+        .cs-arrow { margin-left: auto; color: #ef5350; font-weight: 800; }
+
+        @media (max-width: 760px) {
+            .cctv-strip .cs-sub { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="progress-bar"></div>
+
+    <div class="page">
+        <a class="cctv-strip" href="cctv6.html">
+            <span class="cs-badge">CCTV-6</span>
+            <span class="cs-dot"></span>
+            <strong>六公主</strong>
+            <span class="cs-sub">电影频道实时直播 · 一键直达官方源</span>
+            <span class="cs-arrow">→</span>
+        </a>
+
+        <header class="site-head">
+            <a class="brand" href="index.html">
+                <span class="brand-mark">ME</span>
+                <span class="brand-name">ME·WORLD</span>
+            </a>
+            <nav class="site-nav">
+                <a href="index.html" class="active">首页</a>
+                <a href="archive.html">归档</a>
+                <button class="nav-burger" type="button" aria-label="打开菜单" aria-expanded="false">
+                    <span class="burger-icon"><i></i><i></i><i></i></span><span class="lbl">菜单</span>
+                </button>
+                <div class="nav-panel">
+                    <div class="np-inner">
+                        <div class="np-group">
+                            <div class="np-title">栏目</div>
+                            <a href="tags.html">标签</a>
+                            <a href="maomao.html">毛毛</a>
+                            <a href="about.html">关于</a>
+                        </div>
+                        <div class="np-group">
+                            <div class="np-title">娱乐</div>
+                            <a href="game.html">星际弹弓</a>
+                            <a href="cctv6.html">六公主</a>
+                        </div>
+                        <div class="np-group">
+                            <div class="np-title">工具</div>
+                            <a href="thermometer.html">A股温度计</a>
+                            <a href="deals.html">每日好物</a>
+                            <a href="beauty.html">AI 美图</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="nav-search js-search" type="button" aria-label="搜索"><span class="lbl">搜索</span><kbd>/</kbd></button>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-kicker">MEWORLD.ME · PERSONAL BLOG</div>
+            <h1>记录、沉淀，<br>然后<em>继续往前走</em>。</h1>
+            <p class="hero-desc">这里写我做过的项目、踩过的坑、想过的问题。只写做过的事，一篇只解决一个问题。</p>
+            <div class="hero-stats">
+                <div class="stat"><div class="num" id="stat-posts">3</div><div class="lbl">文章</div></div>
+                <div class="stat"><div class="num">3</div><div class="lbl">标签</div></div>
+                <div class="stat"><div class="num">2026</div><div class="lbl">开写之年</div></div>
+            </div>
+        </section>
+
+        <div class="section-head">
+            <div class="section-title"><span class="num">01</span>最新 · 置顶推荐</div>
+        </div>
+        <a class="featured reveal" href="hello-world.html">
+            <span class="featured-tag">随笔 · 开篇</span>
+            <h2>博客开张：为什么我决定开始写</h2>
+            <p>写下来的东西才算真正想清楚了。这个博客是我给自己的一个约定——把学到的东西、遇到的问题，用文章的形式沉淀下来，而不是让它们烂在笔记库里。</p>
+            <div class="featured-foot"><span>2026-11-17</span><span>·</span><span>约 2 分钟</span><span class="read-cue">阅读全文 →</span></div>
+        </a>
+
+        <div class="section-head">
+            <div class="section-title"><span class="num">02</span>全部文章</div>
+            <a class="section-more" href="archive.html">查看归档 →</a>
+        </div>
+        <div class="post-list">
+            <a class="post-row reveal" href="build-blog-with-ai.html">
+                <span class="row-date">2026-11-17</span>
+                <div class="row-main">
+                    <h3>和 AI 协作，一个下午搭好这个博客</h3>
+                    <p>从设计到上线，记录这个过程里哪些事交给了 AI，哪些事还是得自己拍板。</p>
+                </div>
+                <span class="row-tag">技术</span>
+            </a>
+            <a class="post-row reveal" href="notes-on-tools.html">
+                <span class="row-date">2026-11-17</span>
+                <div class="row-main">
+                    <h3>我的效率工具清单（2026 版）</h3>
+                    <p>整理我日常真正高频使用的工具：它们解决的问题、不可替代之处，以及我踩过的坑。</p>
+                </div>
+                <span class="row-tag">工具</span>
+            </a>
+            <a class="post-row reveal" href="hello-world.html">
+                <span class="row-date">2026-11-17</span>
+                <div class="row-main">
+                    <h3>博客开张：为什么我决定开始写</h3>
+                    <p>收藏不等于学会，记下不等于想清。写下来，是一场自我检验。</p>
+                </div>
+                <span class="row-tag">随笔</span>
+            </a>
+        </div>
+
+        <div class="section-head">
+            <div class="section-title"><span class="num">03</span>按标签找</div>
+            <a class="section-more" href="tags.html">全部标签 →</a>
+        </div>
+        <div class="tag-cloud reveal">
+            <a class="tag-chip" href="tags.html#技术">技术<span class="cnt">1</span></a>
+            <a class="tag-chip" href="tags.html#工具">工具<span class="cnt">1</span></a>
+            <a class="tag-chip" href="tags.html#随笔">随笔<span class="cnt">1</span></a>
+        </div>
+
+                <div class="section-head">
+            <div class="section-title"><span class="num">04</span>摸鱼时间</div>
+        </div>
+        <a class="featured reveal" href="game.html" style="border-color:rgba(91,157,240,.35)">
+            <span class="featured-tag" style="background:rgba(91,157,240,.12);color:var(--blue)">NEW · 原创小游戏</span>
+            <h2>星际弹弓：一点一放，借引力飞向深空</h2>
+            <p>原创单键物理游戏：小行星绕着引力环旋转，点一下屏幕沿切线放飞——接住下一个引力环就继续爬升。收集星星拿连击、躲尖刺雷，越飞越快，看你能上多少米。</p>
+            <div class="featured-foot"><span>纯网页 · 手机可玩</span><span class="read-cue">开始游戏 →</span></div>
+        </a>
+
+        <div class="section-head">
+            <div class="section-title"><span class="num">05</span>家里的猫</div>
+        </div>
+        <a class="featured reveal" href="maomao.html" style="border-color:rgba(232,178,91,.4)">
+            <span class="featured-tag" style="background:rgba(232,178,91,.12);color:var(--accent)">毛毛 · 镇宅之宝</span>
+            <h2>毛毛：12 斤的胆小鬼，谁给吃的跟谁走</h2>
+            <p>本站唯一在编猫员工：主业睡觉，副业干饭，特长被人拍屁股。已绝育公猫，纯黑，微胖界代表。胆子与体重成反比——来个陌生人就钻床底，当年元宝用了它的猫砂盆，它吓得一天没吃饭没拉屎。</p>
+            <div class="featured-foot"><span>性格白皮书 · 观察记录持续更新</span><span class="read-cue">认识毛毛 →</span></div>
+        </a>
+
+        <div class="section-head">
+            <div class="section-title"><span class="num">06</span>每日好物</div>
+        </div>
+        <a class="featured reveal" href="deals.html">
+            <span class="featured-tag" style="background:var(--accent-dim);color:var(--accent)">DAILY PICKS · 每日轮换</span>
+            <h2>每日好物：精选清单 + 一键全网比价</h2>
+            <p>每天轮换主推一件实用好物。顶部搜索框可对任意商品一键直达京东 / 淘宝低价排序，每件商品附图片、参考价、平台链接与慢慢买历史价格曲线入口。</p>
+            <div class="featured-foot"><span>全网搜最低价 · 历史价格查询</span><span class="read-cue">逛今日好物 →</span></div>
+        </a>
+
+        <div class="section-head">
+            <div class="section-title"><span class="num">07</span>AI 美图</div>
+        </div>
+        <a class="featured reveal" href="beauty.html" style="border-color:rgba(91,157,240,.4)">
+            <span class="featured-tag" style="background:rgba(91,157,240,.12);color:var(--blue)">AI STUDIO · 本地处理</span>
+            <h2>AI 美图：输入指令就能修图，还能涂掉水印</h2>
+            <p>上传图片，输入"亮一点""柔肤""胶片感"这样的自然语言指令，智能引擎自动解析成增强参数；涂抹水印区域一键修复。全程浏览器本地处理，图片不上传服务器，处理完直接下载。</p>
+            <div class="featured-foot"><span>指令式美图 · 涂抹去水印 · 隐私安全</span><span class="read-cue">上传一张图试试 →</span></div>
+        </a>
+
+        <footer class="site-foot">
+            <span>© 2026 ME·WORLD · meworld.me</span>
+            <div class="foot-links">
+                <a href="feed.xml">RSS</a>
+                <a href="archive.html">归档</a>
+                <a href="about.html">关于我</a>
+            </div>
+        </footer>
+    </div>
+
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-box">
+            <input id="search-input" type="text" placeholder="搜索文章…（标题 / 标签 / 内容）" autocomplete="off">
+            <div class="search-results" id="search-results"></div>
+            <div class="search-hint">按 <kbd>Esc</kbd> 关闭 · <kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 打开</div>
+        </div>
+    </div>
+
+    <button id="back-top" type="button" aria-label="返回顶部">↑</button>
+    <script src="site.js" defer></script>
+    <script>
+    /* 微信登录 OAuth 回调分发：回调固定落在站点根路径，接住后清参并跳回游戏页 */
+    (function () {
+        var url = new URL(location.href);
+        if (!url.searchParams.has('code') && !url.searchParams.has('error')) return;
+        var s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js';
+        s.onload = async function () {
+            try {
+                var cloud = window.WorkBuddyCloud.createWorkBuddyCloud({
+                    endpoint: 'https://mp-api.app.workbuddy.host',
+                    oauthRelayBaseUrl: 'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
+                    publishableKey: 'wbpk_Y2NI13dI4oISlHR2If4LQq_hYUq1QWUvUQr7HCOtCvjPGo15RP4Q42m'
+                });
+                var provider = url.searchParams.get('provider');
+                var handler = provider === 'wechat' ? cloud.auth.handleWechatWebCallback
+                    : provider === 'workbuddy' ? cloud.auth.handleWorkBuddyCallback : null;
+                if (typeof handler === 'function') {
+                    await handler.call(cloud.auth);
+                }
+                for (var k of ['code', 'state', 'provider']) url.searchParams.delete(k);
+                history.replaceState(null, '', url.pathname + url.search + url.hash);
+                location.replace('game.html');
+            } catch (e) {
+                location.replace('game.html');
+            }
+        };
+        document.head.appendChild(s);
+    })();
+    </script>
+</body>
+</html>

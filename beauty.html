@@ -317,6 +317,11 @@
                         <button class="bt-chip" data-p="暖阳 柔和" type="button">暖阳</button>
                         <button class="bt-chip" data-p="清冷 极简" type="button">清冷</button>
                     </div>
+                    <div class="bt-brushrow" style="margin-top:10px">
+                        <span>强度</span>
+                        <input type="range" class="bt-slider" id="bt-strength" min="40" max="200" value="100">
+                        <span id="bt-strengthval">100%</span>
+                    </div>
                 </div>
                 <button class="bt-btn pri" id="bt-apply" type="button" disabled>✨ 开始美图</button>
                 <div class="bt-status" id="bt-status">等待上传图片…</div>
@@ -343,8 +348,10 @@
         </div>
 
         <div class="bt-note">
-            说明：本模块在<strong>浏览器本地</strong>用智能算法引擎处理图片（指令会被解析成增强参数：色阶拉伸、锐化、磨皮、色调映射、胶片颗粒、暗角等），
-            <strong>图片全程不上传服务器</strong>，隐私无忧。去水印采用涂抹扩散修复算法，对照片上的半透明文字/logo 水印效果最好；
+            说明：本模块在<strong>浏览器本地</strong>用 v2 智能引擎处理图片：亮度直方图自动色阶、带噪点保护的 USM 锐化、
+            <strong>肤色检测 + 蒙版羽化 + 保边磨皮</strong>（只磨皮肤平坦区，五官边缘不糊）、通道级色温调色、胶片颗粒与平滑暗角。
+            拖动「强度」滑杆可整体加减所有效果的力度。<strong>图片全程不上传服务器</strong>，隐私无忧。
+            去水印采用扩散修复 + 羽化融合，对照片上的半透明文字/logo 水印效果最好；
             复杂背景上的大块水印建议缩小笔刷分次修复。静态博客无法运行云端 AI 大模型，如需真正的生成式 AI 修图请使用专业工具。
         </div>
 
@@ -475,7 +482,7 @@
             }
             var p = {
                 bright: 0, contrast: 0, sat: 0, warm: 0, mono: false, sepia: 0,
-                sharpen: 0, smooth: 0, grain: 0, vignette: 0, defog: false, auto: false
+                sharpen: 0, smooth: 0, whiten: 0, grain: 0, vignette: 0, defog: false, auto: false
             };
             // 强度词
             var strong = has('很', '超级', '非常', '大幅', ' extreme') ? 1.8 : (has('稍微', '轻微', '一点', '略') ? 0.6 : 1);
@@ -486,7 +493,7 @@
             if (has('柔和', '低对比')) p.contrast -= 10 * strong;
             if (has('鲜艳', '饱和', '浓')) p.sat += 30 * strong;
             if (has('素', '淡', '降饱和')) p.sat -= 25 * strong;
-            if (has('美白', '白皙')) { p.bright += 10 * strong; p.sat -= 8 * strong; p.warm += -6 * strong; }
+            if (has('美白', '白皙', '透白')) p.whiten += 1 * strong;
             if (has('暖', '夕阳', '胶片', '复古')) p.warm += 16 * strong;
             if (has('冷', '清冷', '极简', '性冷淡')) p.warm -= 16 * strong;
             if (has('复古', '胶片')) p.sepia += 30 * strong;
@@ -498,128 +505,194 @@
             if (has('去雾', '雾霾')) { p.defog = true; p.contrast += 10; p.sharpen += 0.3; }
             if (p.auto) {
                 p.auto = true;
-                if (!p.bright && !has('暗')) p.bright = 6;
-                if (!p.contrast) p.contrast = 10;
-                if (!p.sharpen) p.sharpen = 0.4;
-                if (!p.sat) p.sat = 12;
+                if (!p.bright && !has('暗')) p.bright = 8;
+                if (!p.contrast) p.contrast = 12;
+                if (!p.sharpen) p.sharpen = 0.45;
+                if (!p.sat) p.sat = 14;
             }
             return p;
         }
 
-        /* ================= 处理引擎 ================= */
-        function process(p) {
+        /* ================= 处理引擎 v2 ================= */
+        function clamp255(v) { return v < 0 ? 0 : v > 255 ? 255 : v; }
+
+        function blurCanvas(srcCv, radius) {
+            var c = document.createElement('canvas');
+            c.width = srcCv.width; c.height = srcCv.height;
+            var cx = c.getContext('2d');
+            cx.filter = 'blur(' + radius + 'px)';
+            cx.drawImage(srcCv, 0, 0);
+            return c;
+        }
+
+        var _grainTile = null;
+        function getGrainTile() {
+            if (_grainTile) return _grainTile;
+            var c = document.createElement('canvas');
+            c.width = 128; c.height = 128;
+            var cx = c.getContext('2d');
+            var id = cx.createImageData(128, 128);
+            var dd = id.data;
+            for (var i = 0; i < dd.length; i += 4) {
+                var v = 128 + (Math.random() - 0.5) * 76;
+                dd[i] = dd[i + 1] = dd[i + 2] = v;
+                dd[i + 3] = 255;
+            }
+            cx.putImageData(id, 0, 0);
+            _grainTile = c;
+            return c;
+        }
+
+        function process(p, st) {
+            st = st || 1;
             var src = state.imgCanvas;
             var w = src.width, h = src.height;
 
-            // 1. CSS filter 管线（GPU 加速）
+            // ---------- 1. 基础色调（CSS filter，GPU 加速；模糊不再放这里，避免全局糊） ----------
             var out = document.createElement('canvas');
             out.width = w; out.height = h;
             var octx = out.getContext('2d');
             var f = [];
-            if (p.bright) f.push('brightness(' + (100 + p.bright) + '%)');
-            if (p.contrast) f.push('contrast(' + (100 + p.contrast) + '%)');
-            if (p.sat) f.push('saturate(' + Math.max(0, 100 + p.sat) + '%)');
-            if (p.sepia) f.push('sepia(' + Math.min(100, p.sepia) + '%)');
+            if (p.bright) f.push('brightness(' + (100 + p.bright * st) + '%)');
+            if (p.contrast) f.push('contrast(' + (100 + p.contrast * st) + '%)');
+            if (p.sat) f.push('saturate(' + Math.max(0, 100 + p.sat * st) + '%)');
+            if (p.sepia) f.push('sepia(' + Math.min(100, p.sepia * st) + '%)');
             if (p.mono) f.push('grayscale(100%)');
-            if (p.smooth) f.push('blur(' + (1.2 + p.smooth) + 'px)');
             octx.filter = f.length ? f.join(' ') : 'none';
             octx.drawImage(src, 0, 0);
             octx.filter = 'none';
 
-            // 色调（暖/冷）：叠一层半透明色
-            if (p.warm) {
-                var warm = p.warm > 0;
-                octx.globalCompositeOperation = 'overlay';
-                octx.fillStyle = warm
-                    ? 'rgba(255,170,80,' + Math.min(0.28, Math.abs(p.warm) / 100) + ')'
-                    : 'rgba(90,150,255,' + Math.min(0.28, Math.abs(p.warm) / 100) + ')';
-                octx.fillRect(0, 0, w, h);
-                octx.globalCompositeOperation = 'source-over';
-            }
-
             var imgd = octx.getImageData(0, 0, w, h);
             var d = imgd.data;
 
-            // 2. 自动色阶（亮度直方图 1%~99% 拉伸）
+            // ---------- 2. 自动色阶（0.5% 裁剪拉伸，比旧版 1% 更柔和） ----------
             if (p.auto || p.defog) {
                 var hist = new Array(256).fill(0);
                 for (var i = 0; i < d.length; i += 4) {
                     hist[(d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114) | 0]++;
                 }
                 var total = w * h, lo = 0, hi = 255, acc = 0;
-                for (var v = 0; v < 256; v++) { acc += hist[v]; if (acc >= total * 0.01) { lo = v; break; } }
+                var cut = total * 0.005;
+                for (var v = 0; v < 256; v++) { acc += hist[v]; if (acc >= cut) { lo = v; break; } }
                 acc = 0;
-                for (var v2 = 255; v2 >= 0; v2--) { acc += hist[v2]; if (acc >= total * 0.01) { hi = v2; break; } }
-                if (hi - lo > 20 && (lo > 8 || hi < 247)) {
+                for (var v2 = 255; v2 >= 0; v2--) { acc += hist[v2]; if (acc >= cut) { hi = v2; break; } }
+                if (hi - lo > 30 && (lo > 6 || hi < 249)) {
                     var sc = 255 / (hi - lo);
                     for (var i2 = 0; i2 < d.length; i2 += 4) {
-                        d[i2] = Math.max(0, Math.min(255, (d[i2] - lo) * sc));
-                        d[i2 + 1] = Math.max(0, Math.min(255, (d[i2 + 1] - lo) * sc));
-                        d[i2 + 2] = Math.max(0, Math.min(255, (d[i2 + 2] - lo) * sc));
+                        d[i2] = clamp255((d[i2] - lo) * sc);
+                        d[i2 + 1] = clamp255((d[i2 + 1] - lo) * sc);
+                        d[i2 + 2] = clamp255((d[i2 + 2] - lo) * sc);
                     }
                 }
             }
 
-            // 3. 锐化（Unsharp Mask）
+            // ---------- 3. 锐化（USM + 噪点阈值保护 + 半径随图幅缩放） ----------
             if (p.sharpen > 0) {
-                var blurCv = document.createElement('canvas');
-                blurCv.width = w; blurCv.height = h;
-                var bctx = blurCv.getContext('2d');
-                bctx.filter = 'blur(1.4px)';
-                bctx.drawImage(out, 0, 0);
-                var bl = bctx.getImageData(0, 0, w, h).data;
-                var amt = p.sharpen;
+                octx.putImageData(imgd, 0, 0);
+                var rad = Math.max(1, Math.max(w, h) / 1000) * 1.5;
+                var bl = blurCanvas(out, rad).getContext('2d').getImageData(0, 0, w, h).data;
+                var amt = p.sharpen * st, thr = 3;
                 for (var i3 = 0; i3 < d.length; i3 += 4) {
-                    for (var c = 0; c < 3; c++) {
-                        var o = d[i3 + c], b = bl[i3 + c];
-                        d[i3 + c] = Math.max(0, Math.min(255, o + amt * (o - b)));
+                    for (var c3 = 0; c3 < 3; c3++) {
+                        var o3 = d[i3 + c3], b3 = bl[i3 + c3];
+                        var diff = o3 - b3;
+                        if (diff > thr || diff < -thr) d[i3 + c3] = clamp255(o3 + amt * diff);
                     }
                 }
             }
 
-            // 4. 柔肤（肤色区域向模糊版混合）
-            if (p.smooth > 0) {
-                var smCv = document.createElement('canvas');
-                smCv.width = w; smCv.height = h;
-                var sctx = smCv.getContext('2d');
-                sctx.filter = 'blur(' + (2 + p.smooth * 2.5) + 'px)';
-                sctx.drawImage(out, 0, 0);
-                var sm = sctx.getImageData(0, 0, w, h).data;
-                var k = 0.55 + p.smooth * 0.3;
+            // ---------- 4. 肤色蒙版（柔肤/美白共用：RGB+YCbCr 双判定 → 羽化） ----------
+            var needSkin = p.smooth > 0 || p.whiten > 0;
+            var fmData = null;
+            if (needSkin) {
+                octx.putImageData(imgd, 0, 0);
+                var mkCv = document.createElement('canvas');
+                mkCv.width = w; mkCv.height = h;
+                var mkCtx = mkCv.getContext('2d');
+                var mid = mkCtx.createImageData(w, h);
+                var mdd = mid.data;
                 for (var i4 = 0; i4 < d.length; i4 += 4) {
-                    var r = d[i4], g = d[i4 + 1], b = d[i4 + 2];
-                    if (r > 95 && g > 40 && b > 20 && r > g && g > b && (r - g) > 12 && (r - b) > 18) {
-                        d[i4] = r * (1 - k) + sm[i4] * k;
-                        d[i4 + 1] = g * (1 - k) + sm[i4 + 1] * k;
-                        d[i4 + 2] = b * (1 - k) + sm[i4 + 2] * k;
+                    var r4 = d[i4], g4 = d[i4 + 1], b4 = d[i4 + 2];
+                    var cb = 128 - 0.168736 * r4 - 0.331264 * g4 + 0.5 * b4;
+                    var cr = 128 + 0.5 * r4 - 0.418688 * g4 - 0.081312 * b4;
+                    if (r4 > 70 && g4 > 30 && b4 > 15 && r4 > g4 &&
+                        (r4 - Math.min(g4, b4)) > 10 && cb > 72 && cb < 134 && cr > 128 && cr < 180) {
+                        mdd[i4] = 255; mdd[i4 + 1] = 255; mdd[i4 + 2] = 255; mdd[i4 + 3] = 255;
                     }
+                }
+                mkCtx.putImageData(mid, 0, 0);
+                var feather = blurCanvas(mkCv, Math.max(5, Math.min(w, h) / 140));
+                fmData = feather.getContext('2d').getImageData(0, 0, w, h).data;
+            }
+
+            // ---------- 5. 智能柔肤（保边磨皮：平坦皮肤区磨平，五官边缘不糊） ----------
+            if (p.smooth > 0) {
+                var smR = Math.max(2.5, Math.min(w, h) / 320) * (1 + p.smooth * 0.8);
+                var smData = blurCanvas(out, smR).getContext('2d').getImageData(0, 0, w, h).data;
+                var k5 = Math.min(0.9, (0.45 + p.smooth * 0.35) * st);
+                for (var i5 = 0, px5 = 0; i5 < d.length; i5 += 4, px5++) {
+                    var ma = fmData[i5 + 3] / 255;
+                    if (ma < 0.03) continue;
+                    var r5 = d[i5], g5 = d[i5 + 1], b5 = d[i5 + 2];
+                    // 局部细节量越大越接近边缘 → 越少磨（保住眼睛/嘴唇/发丝轮廓）
+                    var detail = Math.abs(r5 - smData[i5]) + Math.abs(g5 - smData[i5 + 1]) + Math.abs(b5 - smData[i5 + 2]);
+                    var edge = Math.min(1, detail / 90);
+                    var eff = ma * k5 * (1 - edge * 0.85);
+                    d[i5] = r5 * (1 - eff) + smData[i5] * eff;
+                    d[i5 + 1] = g5 * (1 - eff) + smData[i5 + 1] * eff;
+                    d[i5 + 2] = b5 * (1 - eff) + smData[i5 + 2] * eff;
                 }
             }
 
-            // 5. 胶片颗粒 + 暗角
-            if (p.grain > 0) {
-                var gn = p.grain;
-                for (var i5 = 0; i5 < d.length; i5 += 4) {
-                    var n = (Math.random() - 0.5) * gn;
-                    d[i5] += n; d[i5 + 1] += n; d[i5 + 2] += n;
+            // ---------- 6. 美白（仅肤色区域向白提亮，不再全局降饱和发灰） ----------
+            if (p.whiten > 0) {
+                var wk6 = Math.min(0.45, 0.3 * p.whiten * st);
+                for (var i6 = 0; i6 < d.length; i6 += 4) {
+                    var lift = wk6 * (fmData[i6 + 3] / 255);
+                    if (lift < 0.01) continue;
+                    d[i6] += (255 - d[i6]) * lift;
+                    d[i6 + 1] += (255 - d[i6 + 1]) * lift;
+                    d[i6 + 2] += (255 - d[i6 + 2]) * lift;
                 }
             }
-            if (p.vignette > 0) {
-                var cx = w / 2, cy = h / 2, maxD = Math.sqrt(cx * cx + cy * cy);
-                for (var y = 0; y < h; y++) {
-                    for (var x = 0; x < w; x++) {
-                        var dx = x - cx, dy = y - cy;
-                        var dist = Math.sqrt(dx * dx + dy * dy) / maxD;
-                        var vg = 1 - p.vignette * Math.pow(Math.max(0, dist - 0.55) / 0.45, 2);
-                        if (vg < 1) {
-                            var idx = (y * w + x) * 4;
-                            d[idx] *= vg; d[idx + 1] *= vg; d[idx + 2] *= vg;
-                        }
-                    }
+
+            // ---------- 7. 色温（通道级调色，替代旧版的半透明橙色叠加） ----------
+            if (p.warm) {
+                var wk7 = (p.warm / 16) * st;
+                var rM = 1 + 0.085 * wk7, gM = 1 + 0.012 * wk7, bM = 1 - 0.095 * wk7;
+                for (var i7 = 0; i7 < d.length; i7 += 4) {
+                    d[i7] = clamp255(d[i7] * rM);
+                    d[i7 + 1] = clamp255(d[i7 + 1] * gM);
+                    d[i7 + 2] = clamp255(d[i7 + 2] * bM);
                 }
             }
 
             octx.putImageData(imgd, 0, 0);
+
+            // ---------- 8. 暗角（径向渐变合成，平滑无级且比逐像素快百倍） ----------
+            if (p.vignette > 0) {
+                var vg = Math.min(0.6, p.vignette * st);
+                var grad = octx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.45, w / 2, h / 2, Math.sqrt(w * w + h * h) * 0.55);
+                grad.addColorStop(0, 'rgba(0,0,0,0)');
+                grad.addColorStop(1, 'rgba(0,0,0,' + vg + ')');
+                octx.fillStyle = grad;
+                octx.fillRect(0, 0, w, h);
+            }
+
+            // ---------- 9. 胶片颗粒（overlay 噪声瓦片，亮度相关，更像胶片而非数码噪点） ----------
+            if (p.grain > 0) {
+                var tile = getGrainTile();
+                octx.save();
+                octx.globalAlpha = Math.min(0.5, (p.grain / 40) * 0.35 * st);
+                octx.globalCompositeOperation = 'overlay';
+                for (var ty = 0; ty < h; ty += 128) {
+                    for (var tx = 0; tx < w; tx += 128) {
+                        octx.drawImage(tile, tx, ty);
+                    }
+                }
+                octx.restore();
+            }
+
             return out;
         }
 
@@ -679,6 +752,10 @@
             $('bt-brushval').textContent = this.value;
         });
 
+        $('bt-strength').addEventListener('input', function () {
+            $('bt-strengthval').textContent = this.value + '%';
+        });
+
         $('bt-clearmask').addEventListener('click', function () {
             if (maskCtx) maskCtx.clearRect(0, 0, maskCv.width, maskCv.height);
             state.painted = false;
@@ -706,7 +783,7 @@
 
                 // 扩散修复：多次迭代，用邻域均值填充 mask 区域
                 var copy = new Uint8ClampedArray(d);
-                var passes = Math.max(24, Math.ceil(Math.sqrt(cnt)));
+                var passes = Math.max(30, Math.ceil(Math.sqrt(cnt) * 1.5));
                 for (var pass = 0; pass < passes; pass++) {
                     for (var y = 0; y < h; y++) {
                         for (var x = 0; x < w; x++) {
@@ -735,33 +812,21 @@
                         }
                     }
                 }
-                // 修复区轻微模糊，让边缘过渡自然
+                // 修复结果写回
                 d.set(copy);
                 ctx.putImageData(imgd, 0, 0);
-                var tmp = document.createElement('canvas');
-                tmp.width = w; tmp.height = h;
-                var tctx = tmp.getContext('2d');
-                tctx.drawImage(cv, 0, 0);
-                var blurred = document.createElement('canvas');
-                blurred.width = w; blurred.height = h;
-                var blctx = blurred.getContext('2d');
-                blctx.filter = 'blur(2px)';
-                blctx.drawImage(cv, 0, 0);
-                ctx.save();
-                ctx.globalCompositeOperation = 'source-over';
-                // 只在 mask 区域覆盖模糊版本
-                ctx.beginPath();
-                var step = 4;
-                for (var yy = 0; yy < h; yy += step) {
-                    for (var xx = 0; xx < w; xx += step) {
-                        if (mask[yy * w + xx] || ((xx + step < w) && mask[yy * w + xx + step]) || ((yy + step < h) && mask[(yy + step) * w + xx])) {
-                            ctx.rect(xx, yy, step, step);
-                        }
-                    }
-                }
-                ctx.clip();
-                ctx.drawImage(blurred, 0, 0);
-                ctx.restore();
+
+                // 用羽化蒙版融合轻微模糊层 —— 边缘平滑过渡，不再有方块感
+                var featherM = blurCanvas(maskCv, Math.max(2, Math.min(w, h) / 400));
+                var layerCv = document.createElement('canvas');
+                layerCv.width = w; layerCv.height = h;
+                var lctx = layerCv.getContext('2d');
+                lctx.filter = 'blur(1.5px)';
+                lctx.drawImage(cv, 0, 0);
+                lctx.filter = 'none';
+                lctx.globalCompositeOperation = 'destination-in';
+                lctx.drawImage(featherM, 0, 0);
+                ctx.drawImage(layerCv, 0, 0);
 
                 maskCtx.clearRect(0, 0, w, h);
                 state.painted = false;
@@ -777,19 +842,21 @@
             var btn = this;
             btn.disabled = true;
             var p = parseInstr($('bt-instr').value);
+            var stv = +$('bt-strength').value / 100;
             setStatus('正在美图…（大图需要几秒）');
             setTimeout(function () {
                 try {
-                    state.curCanvas = process(p);
+                    state.curCanvas = process(p, stv);
                     maskCv = null; maskCtx = null; state.painted = false;
                     refreshView();
                     $('bt-download').disabled = false;
                     $('bt-inpaint').disabled = false;
-                    var used = $('bt-instr').value.trim() || '默认增强';
-                    setStatus('美图完成 ✓ 指令已解析：' + (p.mono ? '黑白 ' : '') + (p.auto ? '自动色阶 ' : '') +
-                        (p.sharpen ? '锐化 ' : '') + (p.smooth ? '柔肤 ' : '') + (p.grain ? '颗粒 ' : '') +
-                        (p.vignette ? '暗角 ' : '') + (p.warm ? (p.warm > 0 ? '暖色调 ' : '冷色调 ') : '') +
-                        '——可继续涂抹去水印或直接下载。', 'ok');
+                    setStatus('美图完成 ✓ 强度 ' + Math.round(stv * 100) + '%｜已应用：' +
+                        (p.mono ? '黑白 ' : '') + (p.auto ? '自动色阶 ' : '') +
+                        (p.sharpen ? '锐化 ' : '') + (p.smooth ? '智能柔肤 ' : '') + (p.whiten ? '肤色美白 ' : '') +
+                        (p.grain ? '胶片颗粒 ' : '') + (p.vignette ? '暗角 ' : '') +
+                        (p.warm ? (p.warm > 0 ? '暖色调 ' : '冷色调 ') : '') +
+                        '——效果不满意可调「强度」滑杆后重试，或继续涂抹去水印。', 'ok');
                 } catch (err) {
                     setStatus('处理失败：' + err.message, 'err');
                 }

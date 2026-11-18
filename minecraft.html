@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#0b0d10">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的世界（在线版） — ME·WORLD</title>
+    <meta name="description" content="网页版我的世界：基于开源 Eaglercraft 项目，无需下载安装，浏览器直接开玩。多版本可选，支持触屏、联机与光影。">
+    <link rel="canonical" href="https://meworld.me/minecraft.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="alternate" type="application/rss+xml" title="ME·WORLD RSS" href="https://meworld.me/feed.xml">
+    <meta property="og:title" content="我的世界（在线版） — ME·WORLD">
+    <meta property="og:description" content="无需下载，浏览器直接开玩网页版 MC。多版本可选。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://meworld.me/minecraft.html">
+    <meta property="og:image" content="https://meworld.me/og-cover.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ================= 版本选择 ================= */
+        .mc-section-title {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin: 34px 2px 14px;
+        }
+
+        .mc-section-title h2 {
+            font-size: 17px;
+            margin: 0;
+            letter-spacing: 0.02em;
+        }
+
+        .mc-section-title span {
+            font-size: 12px;
+            color: var(--ink-faint);
+        }
+
+        .mc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 14px;
+        }
+
+        .mc-card {
+            background: var(--surface);
+            border: 1px solid var(--line-strong);
+            border-radius: 14px;
+            padding: 16px 16px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: border-color 0.15s, transform 0.15s;
+        }
+
+        .mc-card:hover { border-color: rgba(60, 165, 92, 0.65); transform: translateY(-2px); }
+
+        .mc-card .mc-name {
+            font-size: 15.5px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        .mc-card .mc-tag {
+            display: inline-block;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #0b0d10;
+            background: linear-gradient(135deg, #58c470, #3ca55c);
+            border-radius: 999px;
+            padding: 2.5px 9px;
+            margin-left: 6px;
+            vertical-align: 2px;
+        }
+
+        .mc-card .mc-meta {
+            font-size: 12px;
+            color: var(--ink-faint);
+            line-height: 1.75;
+        }
+
+        .mc-card .mc-meta em { color: var(--ink-soft); font-style: normal; }
+
+        .mc-actions { display: flex; gap: 8px; margin-top: auto; }
+
+        .mc-play {
+            flex: 1;
+            background: linear-gradient(135deg, #58c470, #3ca55c);
+            color: #0b0d10;
+            border: none;
+            border-radius: 9px;
+            padding: 9px 0;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: inherit;
+            transition: filter 0.15s;
+        }
+
+        .mc-play:hover { filter: brightness(1.12); }
+
+        .mc-ext {
+            flex: 0 0 auto;
+            background: transparent;
+            border: 1px solid var(--line-strong);
+            color: var(--ink-soft);
+            border-radius: 9px;
+            padding: 9px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .mc-ext:hover { color: var(--ink); border-color: var(--accent); }
+
+        .mc-toggle {
+            background: transparent;
+            border: 1px dashed var(--line-strong);
+            color: var(--ink-faint);
+            border-radius: 10px;
+            width: 100%;
+            padding: 11px 0;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 16px;
+            transition: color 0.15s, border-color 0.15s;
+        }
+
+        .mc-toggle:hover { color: var(--ink); border-color: var(--accent); }
+
+        /* ================= 游戏视图 ================= */
+        #mc-game { display: none; }
+
+        .mc-topbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .mc-topbar .mc-back {
+            background: transparent;
+            border: 1px solid var(--line-strong);
+            color: var(--ink-soft);
+            border-radius: 9px;
+            padding: 8px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .mc-topbar .mc-back:hover { color: var(--ink); border-color: var(--accent); }
+
+        .mc-topbar .mc-title { font-size: 15px; font-weight: 700; margin-right: auto; }
+
+        .mc-tool {
+            background: transparent;
+            border: 1px solid var(--line-strong);
+            color: var(--ink-soft);
+            border-radius: 9px;
+            padding: 8px 13px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .mc-tool:hover { color: var(--ink); border-color: var(--accent); }
+
+        .mc-frame-wrap {
+            position: relative;
+            border: 1px solid var(--line-strong);
+            border-radius: 14px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .mc-frame-wrap iframe {
+            display: block;
+            width: 100%;
+            height: min(72vh, 760px);
+            border: 0;
+            background: #000;
+        }
+
+        .mc-frame-wrap:fullscreen { border: 0; border-radius: 0; }
+        .mc-frame-wrap:fullscreen iframe { height: 100vh; }
+
+        .mc-loadtip {
+            margin-top: 10px;
+            font-size: 12.5px;
+            color: var(--ink-faint);
+            line-height: 1.8;
+        }
+
+        .mc-loadtip strong { color: var(--accent); font-weight: 700; }
+
+        .mc-note {
+            margin-top: 40px;
+            padding: 16px 20px;
+            border: 1px dashed var(--line-strong);
+            border-radius: 12px;
+            font-size: 12.5px;
+            color: var(--ink-faint);
+            line-height: 1.85;
+        }
+
+        .mc-note b { color: var(--ink-soft); }
+        .mc-note a { color: var(--accent); text-decoration: none; }
+        .mc-note a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="site-head">
+            <a class="brand" href="index.html">
+                <span class="brand-mark">ME</span>
+                <span class="brand-name">ME·WORLD</span>
+            </a>
+            <nav class="site-nav">
+                <a href="index.html">首页</a>
+                <a href="archive.html">归档</a>
+                <a href="tags.html">标签</a>
+                <a href="maomao.html">毛毛</a>
+                <a href="about.html">关于</a>
+                <button class="nav-burger" type="button" aria-label="打开菜单" aria-expanded="false">
+                    <span class="burger-icon"><i></i><i></i><i></i></span><span class="lbl">菜单</span>
+                </button>
+                <div class="nav-panel">
+                    <div class="np-inner">
+                        <div class="np-group">
+                            <div class="np-title">娱乐</div>
+                            <a href="game.html">星际弹弓</a>
+                            <a href="cctv6.html">六公主</a>
+                            <a href="music.html">音乐播放器</a>
+                            <a href="reading.html">阅读</a>
+                            <a href="minecraft.html">我的世界</a>
+                        </div>
+                        <div class="np-group">
+                            <div class="np-title">工具</div>
+                            <a href="thermometer.html">A股温度计</a>
+                            <a href="deals.html">每日好物</a>
+                            <a href="beauty.html">AI 美图</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="nav-search js-search" type="button" aria-label="搜索"><span class="lbl">搜索</span><kbd>/</kbd></button>
+            </nav>
+        </header>
+
+        <a class="back-link" href="index.html">← 返回首页</a>
+
+        <div class="hero">
+            <div class="hero-kicker">MINECRAFT ONLINE</div>
+            <h1>我的世界（在线版）</h1>
+            <div class="hero-desc">
+                无需下载安装，浏览器直接开玩。基于开源项目 <strong style="color:var(--accent)">Eaglercraft</strong>，
+                游戏数据来自 <a href="https://mcjs.link/" target="_blank" rel="noopener" style="color:var(--accent)">MCJS 中文整合站</a>。
+                首次进入需要加载游戏资源，之后浏览器会缓存，再进就是秒开。
+            </div>
+        </div>
+
+        <!-- 版本选择 -->
+        <div id="mc-lobby">
+            <div class="mc-section-title">
+                <h2>热门版本</h2>
+                <span>点「开始游戏」直接在本页内嵌游玩，也可新窗口打开获得最佳性能</span>
+            </div>
+            <div class="mc-grid" id="mc-hot"></div>
+
+            <button class="mc-toggle" id="mc-more-btn" type="button">展开更多版本 ▾（经典老版本 / 怀旧版）</button>
+            <div id="mc-more" style="display:none">
+                <div class="mc-grid" id="mc-more-grid" style="margin-top:14px"></div>
+            </div>
+        </div>
+
+        <!-- 游戏视图 -->
+        <div id="mc-game">
+            <div class="mc-topbar">
+                <button class="mc-back" id="mc-back" type="button">← 返回版本选择</button>
+                <div class="mc-title" id="mc-title"></div>
+                <a class="mc-tool" id="mc-newtab" href="#" target="_blank" rel="noopener" title="在新窗口打开游戏（性能更好）">新窗口打开 ↗</a>
+                <button class="mc-tool" id="mc-fs" type="button" title="进入全屏">全屏</button>
+            </div>
+            <div class="mc-frame-wrap" id="mc-wrap">
+                <iframe id="mc-iframe" title="我的世界游戏窗口" allowfullscreen
+                        allow="fullscreen; pointer-lock; keyboard-map; gamepad; autoplay"></iframe>
+            </div>
+            <div class="mc-loadtip" id="mc-loadtip"></div>
+        </div>
+
+        <div class="mc-note" style="margin-top:40px">
+            🎮 说明：本页是开源项目 <b>Eaglercraft</b>（把 MC Java 版编译到浏览器运行的粉丝作品）的中文整合版入口，与 Mojang / Microsoft 无关，仅供学习体验。
+            游戏资源由 mcjs.link 及其镜像提供，世界存档保存在你自己浏览器的本地存储里，清除浏览器数据会丢档，重要存档请在游戏内导出备份。
+            推荐 1.8.8 WASM 版：体积最小、支持光影；老电脑或触屏设备若 WASM 版异常，换 1.8.8 JavaScript 版兼容性最好。
+        </div>
+
+        <footer class="site-foot">
+            <div class="foot-left">© 2026 ME·WORLD — meworld.me</div>
+            <div class="foot-right">
+                <a href="feed.xml">RSS</a>
+                <a href="index.html">回首页</a>
+                <a href="about.html">关于我</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="site.js" defer></script>
+    <script>
+    (function () {
+        'use strict';
+        var R2 = 'https://mcjs-r2.pages.dev/assets/game?ver=';
+
+        var HOT = [
+            { v: '1.8.8wasm', name: '1.8.8', engine: 'WASM-GC', tag: '推荐', size: '9.7MB',
+              feat: '简体中文 · 触屏操作 · 远程联机 · 光影（需高性能设备）', raw: 'MC Java 1.8.8 · EaglercraftX u53 ultimate' },
+            { v: '1.8.8', name: '1.8.8', engine: 'JavaScript', tag: '', size: '21.2MB',
+              feat: '简体中文 · 远程联机 · 兼容性最好的经典版本', raw: 'MC Java 1.8.8 · EaglercraftX u53 ultimate' },
+            { v: '1.12.2', name: '1.12.2', engine: 'WASM-GC', tag: '', size: '约16MB',
+              feat: '简体中文 · 远程联机', raw: 'MC Java 1.12.2 · Eaglercraft u3' },
+            { v: '26.3', name: '26.3', engine: 'WASM-GC', tag: '最新', size: '约75MB',
+              feat: '简体中文 · 触屏操作 · 远程联机 · 内容最多', raw: 'MC Java 26.3 · Eaglercraft u1' },
+            { v: '1.21.11', name: '1.21.11', engine: 'WASM-GC', tag: '', size: '约60MB',
+              feat: '简体中文 · 远程联机', raw: 'MC Java 1.21.11' },
+            { v: '1.16.5', name: '1.16.5', engine: 'WASM-GC', tag: '', size: '约40MB',
+              feat: '简体中文 · 远程联机', raw: 'MC Java 1.16.5' }
+        ];
+
+        var MORE = [
+            { v: '26.2', name: '26.2', engine: 'WASM-GC', size: '约70MB', feat: '简体中文 · 触屏 · 联机' },
+            { v: '1.20.6', name: '1.20.6', engine: 'WASM-GC', size: '', feat: '简体中文 · 联机' },
+            { v: '1.19.4', name: '1.19.4', engine: 'WASM-GC', size: '', feat: '简体中文 · 联机' },
+            { v: '1.15.2', name: '1.15.2', engine: 'WASM-GC', size: '', feat: '简体中文' },
+            { v: '1.14.4', name: '1.14.4', engine: 'WASM-GC', size: '', feat: '简体中文' },
+            { v: '1.13.2', name: '1.13.2', engine: 'WASM-GC', size: '', feat: '简体中文' },
+            { v: '1.9.4', name: '1.9.4', engine: '', size: '', feat: '简体中文' },
+            { v: '1.6.4', name: '1.6.4', engine: '', size: '', feat: '怀旧版' },
+            { v: '1.5.2', name: '1.5.2', engine: '', size: '', feat: '怀旧版' },
+            { v: '1.2.5', name: '1.2.5', engine: '', size: '', feat: '远古版' },
+            { v: 'beta1.7.3', name: 'Beta 1.7.3', engine: '', size: '', feat: '远古版 · 2011' },
+            { v: 'beta1.3', name: 'Beta 1.3', engine: '', size: '', feat: '远古版' },
+            { v: 'alpha1.2.6', name: 'Alpha 1.2.6', engine: '', size: '', feat: '远古版 · 2010' }
+        ];
+
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        function cardHtml(b) {
+            var tag = b.tag ? '<span class="mc-tag">' + esc(b.tag) + '</span>' : '';
+            var engine = b.engine ? esc(b.engine) + ' · ' : '';
+            var size = b.size ? ' · ' + esc(b.size) : '';
+            return '<div class="mc-card">' +
+                '<div class="mc-name">我的世界 ' + esc(b.name) + tag + '</div>' +
+                '<div class="mc-meta">' + (b.raw ? esc(b.raw) + '<br>' : '') +
+                '<em>' + engine + esc(b.feat || '') + size + '</em></div>' +
+                '<div class="mc-actions">' +
+                '<button class="mc-play" data-v="' + esc(b.v) + '" data-name="' + esc(b.name) + '" data-engine="' + esc(b.engine || '') + '" type="button">开始游戏</button>' +
+                '<a class="mc-ext" href="' + R2 + encodeURIComponent(b.v) + '" target="_blank" rel="noopener" title="在新窗口打开">↗</a>' +
+                '</div></div>';
+        }
+
+        document.getElementById('mc-hot').innerHTML = HOT.map(cardHtml).join('');
+        document.getElementById('mc-more-grid').innerHTML = MORE.map(cardHtml).join('');
+
+        document.getElementById('mc-more-btn').addEventListener('click', function () {
+            var box = document.getElementById('mc-more');
+            var open = box.style.display !== 'none';
+            box.style.display = open ? 'none' : 'block';
+            this.textContent = open ? '展开更多版本 ▾（经典老版本 / 怀旧版）' : '收起更多版本 ▴';
+        });
+
+        var lobby = document.getElementById('mc-lobby');
+        var game = document.getElementById('mc-game');
+        var iframe = document.getElementById('mc-iframe');
+        var wrap = document.getElementById('mc-wrap');
+
+        function sizeLabel(v) {
+            var all = HOT.concat(MORE);
+            for (var i = 0; i < all.length; i++) if (all[i].v === v) return all[i].size || '数 MB 至 75MB 不等';
+            return '数 MB 至 75MB 不等';
+        }
+
+        function startGame(v, name, engine) {
+            iframe.src = R2 + encodeURIComponent(v);
+            document.getElementById('mc-title').textContent = '我的世界 ' + name + (engine ? ' · ' + engine : '');
+            document.getElementById('mc-newtab').href = R2 + encodeURIComponent(v);
+            document.getElementById('mc-loadtip').innerHTML =
+                '首次加载需要下载游戏资源（' + esc(sizeLabel(v)) + '），请耐心等待黑屏进度；加载完成后浏览器会缓存，下次秒开。<br>' +
+                '点击画面锁定鼠标开始操作，按 <strong>Esc</strong> 释放鼠标；<strong>全屏</strong>体验更佳。游戏内 Esc → 设置可切换中文与按键。';
+            lobby.style.display = 'none';
+            game.style.display = 'block';
+            try { localStorage.setItem('mc-last', JSON.stringify({ v: v, n: name, e: engine || '' })); } catch (e) {}
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.addEventListener('click', function (ev) {
+            var btn = ev.target.closest('.mc-play');
+            if (btn) startGame(btn.dataset.v, btn.dataset.name, btn.dataset.engine);
+        });
+
+        document.getElementById('mc-back').addEventListener('click', function () {
+            iframe.src = 'about:blank';
+            game.style.display = 'none';
+            lobby.style.display = 'block';
+        });
+
+        document.getElementById('mc-fs').addEventListener('click', function () {
+            if (wrap.requestFullscreen) wrap.requestFullscreen();
+            else if (wrap.webkitRequestFullscreen) wrap.webkitRequestFullscreen();
+        });
+
+        // ?v= 直链直达（如 minecraft.html?v=1.8.8wasm）
+        var q = new URLSearchParams(location.search).get('v');
+        if (q) {
+            var found = null, all = HOT.concat(MORE);
+            for (var i = 0; i < all.length; i++) if (all[i].v === q) found = all[i];
+            if (found) startGame(found.v, found.name, found.engine);
+        }
+    })();
+    </script>
+</body>
+</html>

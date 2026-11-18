@@ -180,4 +180,42 @@
             .then(function (data) { searchIndex = data; })
             .catch(function () { /* 本地预览时忽略 */ });
     }
+
+    /* ---------- 8. 导航分组下拉 ---------- */
+    var drops = $$('.nav-drop');
+    if (drops.length) {
+        var closeDrops = function () {
+            drops.forEach(function (d) { d.classList.remove('open'); });
+        };
+
+        drops.forEach(function (d) {
+            var btn = $('.drop-btn', d);
+            if (!btn) return;
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var wasOpen = d.classList.contains('open');
+                closeDrops();
+                if (!wasOpen) d.classList.add('open');
+            });
+            // 触屏设备：点菜单项前先收起
+            $$('.drop-menu a', d).forEach(function (a) {
+                a.addEventListener('click', closeDrops);
+            });
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest || !e.target.closest('.nav-drop')) closeDrops();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeDrops();
+        });
+
+        // 当前页在对应分组菜单里高亮
+        var here = location.pathname.split('/').pop() || 'index.html';
+        drops.forEach(function (d) {
+            var cur = $('.drop-menu a[href="' + here + '"]', d);
+            if (cur) cur.classList.add('now');
+        });
+    }
 })();

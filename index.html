@@ -86,9 +86,23 @@
                 <a href="index.html" class="active">首页</a>
                 <a href="archive.html">归档</a>
                 <a href="tags.html">标签</a>
-                <a href="game.html">游戏</a>
-                <a href="cctv6.html">六公主</a><a href="thermometer.html">温度计</a>
-                <a href="deals.html">好物</a><a href="maomao.html">毛毛</a><a href="about.html">关于</a>
+                <div class="nav-drop">
+                    <button class="drop-btn" type="button">娱乐<span class="caret">▾</span></button>
+                    <div class="drop-menu">
+                        <a href="game.html">星际弹弓</a>
+                        <a href="cctv6.html">六公主</a>
+                    </div>
+                </div>
+                <div class="nav-drop">
+                    <button class="drop-btn" type="button">工具<span class="caret">▾</span></button>
+                    <div class="drop-menu">
+                        <a href="thermometer.html">A股温度计</a>
+                        <a href="deals.html">每日好物</a>
+                        <a href="beauty.html">AI 美图</a>
+                    </div>
+                </div>
+                <a href="maomao.html">毛毛</a>
+                <a href="about.html">关于</a>
                 <button class="nav-search js-search" type="button" aria-label="搜索"><span class="lbl">搜索</span><kbd>/</kbd></button>
             </nav>
         </header>
@@ -183,6 +197,16 @@
             <h2>每日好物：精选清单 + 一键全网比价</h2>
             <p>每天轮换主推一件实用好物。顶部搜索框可对任意商品一键直达京东 / 淘宝低价排序，每件商品附图片、参考价、平台链接与慢慢买历史价格曲线入口。</p>
             <div class="featured-foot"><span>全网搜最低价 · 历史价格查询</span><span class="read-cue">逛今日好物 →</span></div>
+        </a>
+
+        <div class="section-head">
+            <div class="section-title"><span class="num">07</span>AI 美图</div>
+        </div>
+        <a class="featured reveal" href="beauty.html" style="border-color:rgba(91,157,240,.4)">
+            <span class="featured-tag" style="background:rgba(91,157,240,.12);color:var(--blue)">AI STUDIO · 本地处理</span>
+            <h2>AI 美图：输入指令就能修图，还能涂掉水印</h2>
+            <p>上传图片，输入"亮一点""柔肤""胶片感"这样的自然语言指令，智能引擎自动解析成增强参数；涂抹水印区域一键修复。全程浏览器本地处理，图片不上传服务器，处理完直接下载。</p>
+            <div class="featured-foot"><span>指令式美图 · 涂抹去水印 · 隐私安全</span><span class="read-cue">上传一张图试试 →</span></div>
         </a>
 
         <footer class="site-foot">

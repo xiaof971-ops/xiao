@@ -293,37 +293,41 @@
             -webkit-appearance: none;
             appearance: none;
             width: 100%;
-            height: 5px;
+            height: 6px;
             border-radius: 999px;
             background: linear-gradient(90deg, var(--accent) var(--p, 0%), rgba(255,255,255,0.14) var(--p, 0%));
             outline: none;
             cursor: pointer;
             display: block;
+            margin: 8px 0;
         }
 
         .mp-seek::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 13px; height: 13px;
+            width: 16px; height: 16px;
             border-radius: 50%;
             background: var(--accent);
-            border: 2px solid #14181e;
-            box-shadow: 0 0 0 1px rgba(232,178,91,0.5);
+            border: 3px solid #14181e;
+            box-shadow: 0 0 0 1px rgba(232,178,91,0.55);
             cursor: grab;
-            transition: transform 0.12s;
+            transition: transform 0.12s, box-shadow 0.12s;
         }
 
-        .mp-seek::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.18); }
+        .mp-seek:hover::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(232,178,91,0.18); }
+        .mp-seek::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.22); }
 
         .mp-seek::-moz-range-thumb {
-            width: 12px; height: 12px;
+            width: 14px; height: 14px;
             border-radius: 50%;
             background: var(--accent);
-            border: 2px solid #14181e;
+            border: 3px solid #14181e;
             cursor: grab;
         }
 
-        .mp-seek::-moz-range-track { height: 5px; border-radius: 999px; background: transparent; }
+        .mp-seek::-moz-range-thumb:active { cursor: grabbing; transform: scale(1.22); }
+
+        .mp-seek::-moz-range-track { height: 6px; border-radius: 999px; background: transparent; }
 
         .mp-times {
             display: flex;
@@ -403,7 +407,7 @@
 
         .mp-vol input::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 10px; height: 10px;
+            width: 12px; height: 12px;
             border-radius: 50%;
             background: var(--ink-soft);
             cursor: pointer;
@@ -411,32 +415,49 @@
 
         .mp-mode { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
 
-        /* 歌词 */
+        /* 歌词：覆盖封面区域（不遮挡下方控制按钮，随时可切回） */
         .mp-lyric {
             position: absolute;
             inset: 0;
             background: linear-gradient(180deg, #16191f, #101318);
             border-radius: 16px;
             overflow-y: auto;
-            padding: 120px 22px;
+            padding: 26px 20px;
+            padding-top: 42px;
             display: none;
             scrollbar-width: none;
         }
 
         .mp-lyric::-webkit-scrollbar { width: 0; }
 
+        .mp-lyric .lrc-cap {
+            position: sticky;
+            top: -30px;
+            margin: 0 -20px 6px;
+            padding: 0 20px 8px;
+            height: 30px;
+            font-size: 10.5px;
+            letter-spacing: 0.12em;
+            color: var(--ink-faint);
+            background: linear-gradient(180deg, #16191f 78%, transparent);
+            z-index: 2;
+        }
+
+        .mp-lyric .lrc-cap b { color: var(--accent); font-weight: 800; }
+
         .mp-player.show-lyric .mp-lyric { display: block; }
-        .mp-player.show-lyric .mp-art { background: #101318; }
 
         .mp-lyric p {
             font-size: 13.5px;
-            line-height: 1.9;
+            line-height: 1.85;
             color: var(--ink-faint);
             text-align: center;
             transition: color 0.2s, transform 0.2s;
-            margin: 3px 0;
+            margin: 4px 0;
             cursor: pointer;
         }
+
+        .mp-lyric p:hover { color: var(--ink-soft); }
 
         .mp-lyric p.act {
             color: var(--accent);
@@ -609,6 +630,9 @@
                             <circle cx="60" cy="60" r="2" fill="#ffe8e8" opacity="0.85"/>
                         </svg>
                     </div>
+                    <div class="mp-lyric" id="mp-lyric">
+                        <div class="lrc-empty">播放歌曲后显示歌词</div>
+                    </div>
                 </div>
 
                 <div class="mp-meta">
@@ -644,10 +668,6 @@
                     </div>
                     <button class="mp-btn" id="mp-mode" type="button" aria-label="播放模式" title="列表循环">🔁</button>
                     <button class="mp-btn" id="mp-lyric-btn" type="button" aria-label="歌词开关" title="显示 / 隐藏歌词">词</button>
-                </div>
-
-                <div class="mp-lyric" id="mp-lyric">
-                    <div class="lrc-empty">播放歌曲后显示歌词</div>
                 </div>
             </aside>
         </div>
@@ -1100,9 +1120,11 @@
         function paintLyric(arr) {
             state.lyric = arr;
             state.lyricIdx = -1;
-            $('mp-lyric').innerHTML = arr.map(function (l, i) {
-                return '<p data-i="' + i + '">' + esc(l.text) + '</p>';
-            }).join('');
+            $('mp-lyric').innerHTML =
+                '<div class="lrc-cap">歌词 · 点 <b>词</b> 按钮收起 · 点任意一行跳转</div>' +
+                arr.map(function (l, i) {
+                    return '<p data-i="' + i + '">' + esc(l.text) + '</p>';
+                }).join('');
         }
 
         function syncLyric(t) {
@@ -1135,6 +1157,9 @@
         }
 
         var dragging = false;
+
+        var dragging = false;
+        var lastSeekTs = 0;
 
         audio.addEventListener('loadedmetadata', function () {
             $('mp-play').classList.remove('loading');
@@ -1179,19 +1204,29 @@
 
         $('mp-seek').addEventListener('input', function () {
             dragging = true;
-            var v = Number(this.value) / 10;
-            this.style.setProperty('--p', v + '%');
-            if (audio.duration) $('mp-cur').textContent = fmtTime(audio.duration * v / 100);
+            var pct = Number(this.value) / 1000;
+            this.style.setProperty('--p', pct * 100 + '%');
+            if (audio.duration) {
+                $('mp-cur').textContent = fmtTime(audio.duration * pct);
+                /* 拖动中节流实时 seek（约 150ms 一次），松手后精确落点 */
+                var now = Date.now();
+                if (now - lastSeekTs > 150) {
+                    lastSeekTs = now;
+                    audio.currentTime = audio.duration * pct;
+                }
+            }
         });
 
         function doSeek() {
             dragging = false;
             if (!audio.duration) return;
             audio.currentTime = audio.duration * (Number($('mp-seek').value) / 1000);
+            syncLyric(audio.currentTime);
         }
 
         $('mp-seek').addEventListener('change', doSeek);
         $('mp-seek').addEventListener('pointerup', doSeek);
+        $('mp-seek').addEventListener('keydown', function () { dragging = false; });
 
         $('mp-play').addEventListener('click', function () {
             if (!audio.src) {

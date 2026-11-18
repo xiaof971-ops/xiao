@@ -245,4 +245,53 @@
         var tagStat = document.querySelector('.hero-stats .stat:nth-child(2) .num');
         if (tagStat && chips) tagStat.textContent = chips;
     }
+
+    /* ---------- 11. 开关灯 · 光/暗主题 ---------- */
+    var THEME_KEY = 'meworld-theme';
+
+    function applyTheme(t, animate) {
+        if (animate) {
+            document.documentElement.classList.add('theme-anim');
+            setTimeout(function () { document.documentElement.classList.remove('theme-anim'); }, 400);
+        }
+        if (t === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', t === 'light' ? '#f7f5f0' : '#0b0d10');
+        $$('.theme-toggle').forEach(function (btn) {
+            var ico = $('.tt-ico', btn);
+            var lbl = $('.tt-lbl', btn);
+            if (ico) ico.textContent = t === 'light' ? '🌙' : '☀️';
+            if (lbl) lbl.textContent = t === 'light' ? '暗' : '光';
+            btn.setAttribute('aria-label', t === 'light' ? '切换到暗色模式' : '切换到光色模式');
+            btn.setAttribute('title', t === 'light' ? '切到暗' : '切到光');
+        });
+    }
+
+    // 初始主题：读缓存（与防闪烁脚本一致）
+    var saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+    var initial = saved === 'light' ? 'light' : 'dark';
+    applyTheme(initial, false);
+
+    // 注入切换按钮（所有页面）
+    var nav = $('.site-nav');
+    if (nav && !$('.theme-toggle', nav)) {
+        var btn = document.createElement('button');
+        btn.className = 'theme-toggle';
+        btn.type = 'button';
+        btn.innerHTML = '<span class="tt-ico">☀️</span><span class="tt-lbl">光</span>';
+        btn.addEventListener('click', function () {
+            var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+            applyTheme(next, true);
+        });
+        var anchor = $('.nav-search', nav);
+        if (anchor) nav.insertBefore(btn, anchor);
+        else nav.appendChild(btn);
+        applyTheme(initial, false);
+    }
 })();

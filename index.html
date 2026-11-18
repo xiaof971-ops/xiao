@@ -18,11 +18,65 @@
     {"@context":"https://schema.org","@type":"WebSite","name":"ME·WORLD","url":"https://meworld.me/","description":"个人博客：技术笔记、工具与效率、随笔"}
     </script>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* 六公主顶部模块 */
+        .cctv-strip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface);
+            border: 1px solid rgba(239, 83, 80, 0.45);
+            border-radius: 999px;
+            padding: 9px 18px;
+            margin-top: 14px;
+            text-decoration: none;
+            color: var(--ink-soft);
+            font-size: 13.5px;
+            transition: all 0.15s;
+        }
+
+        .cctv-strip:hover { border-color: #ef5350; background: var(--bg-soft); }
+
+        .cs-badge {
+            background: #ef5350;
+            color: #fff;
+            font-weight: 800;
+            font-size: 11px;
+            border-radius: 6px;
+            padding: 2px 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .cs-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #ef5350;
+            box-shadow: 0 0 6px #ef5350;
+            animation: csblink 1.6s infinite;
+        }
+
+        @keyframes csblink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+        .cctv-strip strong { color: var(--ink); font-size: 14px; }
+        .cs-arrow { margin-left: auto; color: #ef5350; font-weight: 800; }
+
+        @media (max-width: 760px) {
+            .cctv-strip .cs-sub { display: none; }
+        }
+    </style>
 </head>
 <body>
     <div id="progress-bar"></div>
 
     <div class="page">
+        <a class="cctv-strip" href="cctv6.html">
+            <span class="cs-badge">CCTV-6</span>
+            <span class="cs-dot"></span>
+            <strong>六公主</strong>
+            <span class="cs-sub">电影频道实时直播 · 一键直达官方源</span>
+            <span class="cs-arrow">→</span>
+        </a>
+
         <header class="site-head">
             <a class="brand" href="index.html">
                 <span class="brand-mark">ME</span>
@@ -33,7 +87,7 @@
                 <a href="archive.html">归档</a>
                 <a href="tags.html">标签</a>
                 <a href="game.html">游戏</a>
-                <a href="thermometer.html">温度计</a>
+                <a href="cctv6.html">六公主</a><a href="thermometer.html">温度计</a>
                 <a href="deals.html">好物</a><a href="maomao.html">毛毛</a><a href="about.html">关于</a>
                 <button class="nav-search js-search" type="button" aria-label="搜索"><span class="lbl">搜索</span><kbd>/</kbd></button>
             </nav>

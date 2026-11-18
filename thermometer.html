@@ -148,6 +148,133 @@
         .list-note strong.r { color: #ef5350; }
         .list-note strong.b { color: var(--blue); }
 
+        /* ---------- 个股速查 ---------- */
+        .sq-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 22px;
+        }
+
+        .sq-search { position: relative; display: flex; gap: 10px; }
+
+        .sq-search input {
+            flex: 1;
+            background: var(--bg-soft);
+            border: 1px solid var(--line-strong);
+            border-radius: 10px;
+            padding: 11px 16px;
+            font-size: 14.5px;
+            color: var(--ink);
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .sq-search input:focus { border-color: var(--accent); }
+
+        .sq-search button {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 0 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .sq-search button:disabled { opacity: 0.5; cursor: default; }
+
+        .sq-suggest {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0; right: 88px;
+            background: var(--surface);
+            border: 1px solid var(--line-strong);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+            z-index: 30;
+            overflow: hidden;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .sq-suggest .sq-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .sq-suggest .sq-item:hover, .sq-suggest .sq-item.on { background: var(--bg-soft); }
+        .sq-suggest .sq-item .nm { font-weight: 700; }
+        .sq-suggest .sq-item .cd { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); }
+        .sq-suggest .sq-item .mk { margin-left: auto; font-size: 11.5px; color: var(--ink-faint); }
+        .sq-suggest .sq-empty { padding: 12px 16px; font-size: 13px; color: var(--ink-faint); }
+
+        .sq-result { margin-top: 20px; }
+
+        .sq-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 6px 14px;
+        }
+
+        .sq-top .sq-nm { font-size: 20px; font-weight: 800; font-family: var(--serif); }
+        .sq-top .sq-cd { font-family: var(--mono); font-size: 12.5px; color: var(--ink-faint); }
+        .sq-top .sq-pr { font-size: 20px; font-weight: 700; font-family: var(--serif); }
+        .sq-top .sq-pc { font-size: 14.5px; font-weight: 700; }
+
+        .sq-gauge-wrap { margin-top: 18px; display: grid; grid-template-columns: 1fr 300px; gap: 26px; align-items: start; }
+
+        .sq-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+            gap: 10px;
+        }
+
+        .sq-stat {
+            background: var(--bg-soft);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .sq-stat .k { font-size: 11.5px; color: var(--ink-faint); }
+        .sq-stat .v { margin-top: 4px; font-size: 16px; font-weight: 700; font-family: var(--serif); }
+
+        .sq-tempbox { text-align: center; background: var(--bg-soft); border: 1px solid var(--line); border-radius: 12px; padding: 16px 14px 14px; }
+
+        .sq-temp-read { font-size: 34px; font-weight: 800; font-family: var(--serif); line-height: 1; }
+
+        .sq-gauge { position: relative; height: 10px; border-radius: 999px; margin: 14px 6px 6px;
+            background: linear-gradient(to right, #5b9df0 0 38.5%, #e8b25b 38.5% 69.2%, #ef5350 69.2% 100%); }
+
+        .sq-gauge .sq-pin {
+            position: absolute; top: -6px; width: 4px; height: 22px;
+            border-radius: 2px; background: var(--ink);
+            transform: translateX(-50%);
+            box-shadow: 0 0 4px rgba(0,0,0,0.3);
+        }
+
+        .sq-scale { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--ink-faint); font-family: var(--mono); padding: 0 2px; }
+
+        .sq-signal { margin-top: 18px; border-radius: 12px; padding: 14px 18px; font-size: 13.5px; line-height: 1.8; }
+        .sq-signal .t { font-weight: 800; font-size: 14.5px; margin-bottom: 4px; }
+        .sig-warn { background: rgba(239,83,80,0.10); border: 1px solid rgba(239,83,80,0.35); }
+        .sig-warn .t { color: #ef5350; }
+        .sig-opp  { background: rgba(91,157,240,0.10); border: 1px solid rgba(91,157,240,0.35); }
+        .sig-opp .t { color: var(--blue); }
+        .sig-norm { background: var(--bg-soft); border: 1px solid var(--line-strong); }
+        .sig-norm .t { color: var(--accent); }
+
+        .stock-table .s-name.link { cursor: pointer; border-bottom: 1px dashed var(--ink-faint); }
+        .stock-table .s-name.link:hover { color: var(--accent); }
+
         .table-wrap { overflow-x: auto; }
 
         .th-state {
@@ -188,6 +315,8 @@
             .thermo-card { flex-direction: row; gap: 18px; padding: 20px; }
             .thermo-card svg { width: 130px; height: 300px; }
             .thermo-read { font-size: 34px; }
+            .sq-gauge-wrap { grid-template-columns: 1fr; }
+            .sq-suggest { right: 0; }
         }
     </style>
 </head>
@@ -273,6 +402,23 @@
             </div>
         </div>
 
+        <!-- 个股速查 -->
+        <div class="section-head" style="margin-top:56px">
+            <div class="section-title"><span class="num">◎</span>个股速查 · 单票温度与买卖参考</div>
+        </div>
+        <p class="list-note">
+            输入任意 A 股的<strong>代码 / 名称 / 拼音首字母</strong>（如 600519、茅台、gzmt），查它的实时温度与所处区间。
+            危险 / 机会名单中的股票名称也可以直接点击查询。
+        </p>
+        <div class="sq-card">
+            <div class="sq-search">
+                <input id="sq-input" type="text" placeholder="输入代码或名称，如 600519 / 茅台 / 宁德时代" autocomplete="off">
+                <button id="sq-btn" type="button">查询</button>
+                <div class="sq-suggest" id="sq-suggest" hidden></div>
+            </div>
+            <div class="sq-result" id="sq-result" hidden></div>
+        </div>
+
         <!-- 危险名单 -->
         <div class="section-head" style="margin-top:56px">
             <div class="section-title"><span class="num" style="color:#ef5350">▲</span>危险名单 · 爆量下跌</div>
@@ -304,6 +450,7 @@
             <li>· <strong>市场温度</strong> = 50 + 平均涨跌 ×12 + （上涨占比-0.5）×70 + （平均量比-1）×12，截断到 [-30, 100]</li>
             <li>· <strong>个股温度</strong> = 15 + 量比×12 + 跌幅反向×3 + 换手率×2.5，同样截断 —— 爆量下跌越猛越"烫"，缩量越狠越"冰"</li>
             <li>· 三段划分（自定义）：<span class="tc-opp temp-chip">≤ 20° 机会</span> <span class="tc-norm temp-chip">20~60° 正常</span> <span class="tc-warn temp-chip">≥ 60° 危险</span></li>
+            <li>· <strong>买卖参考</strong>（个股速查）：由温度区间 + 量比/涨跌/换手组合机械推导 —— 危险区叠加"量比≥2.5 且跌≥2%"判为疑似出货；机会区叠加"缩量横盘"判为蓄势观察；正常区按量能与涨跌方向给出中性提示，均非投资建议</li>
             <li>· 量比 = 当日每分钟均量 ÷ 过去 5 日每分钟均量；换手率、涨跌幅均来自交易所行情</li>
         </ul>
 
@@ -442,7 +589,7 @@
         function rowHtml(s) {
             var z = zoneOf(s.temp);
             return '<tr>' +
-                '<td><span class="s-name">' + esc(s.name) + '</span><span class="s-code">' + esc(s.code) + '</span></td>' +
+                '<td><span class="s-name link" data-code="' + esc(s.code) + '" title="点击查询该股">' + esc(s.name) + '</span><span class="s-code">' + esc(s.code) + '</span></td>' +
                 '<td>' + s.price.toFixed(2) + '</td>' +
                 '<td class="' + pctCls(s.pct) + '">' + fmtPct(s.pct) + '</td>' +
                 '<td>' + s.vr.toFixed(2) + '</td>' +
@@ -516,7 +663,11 @@
 
                 if (stocks.length < 50) throw new Error('insufficient data');
 
-                stocks.forEach(function (s) { s.temp = stockTemp(s); });
+                stocks.forEach(function (s) {
+                    s.temp = stockTemp(s);
+                    s.secid = secidOf(s.code);
+                });
+                stockCache = stocks.slice();
 
                 // 市场统计
                 var ups = stocks.filter(function (s) { return s.pct > 0; }).length;
@@ -570,6 +721,225 @@
 
         // 盘中每 60 秒自动刷新
         setInterval(function () { if (marketState().live) load(); }, 60000);
+
+        /* ================= 个股速查 ================= */
+        var SUGGEST = 'https://searchadapter.eastmoney.com/api/suggest/get?type=14&token=D43BF722C8E33BDC906FB84D85E326E8&count=8&input=';
+        var QUOTE = 'https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&fields=f2,f3,f6,f8,f10,f12,f14&secids=';
+        var stockCache = [];   // 主样本加载后缓存，供本地联想
+
+        function secidOf(code) {
+            return (/^(6|9)/.test(code) ? '1.' : '0.') + code;
+        }
+
+        /* ---- 信号判定 ---- */
+        function signalOf(s) {
+            var t = s.temp;
+            if (t >= 60) {
+                if (s.vr >= 2.5 && s.pct <= -2) {
+                    return { cls: 'sig-warn', tag: '▲ 危险信号', title: '疑似放量出货，短期回避',
+                        text: '量比 <strong>' + s.vr.toFixed(2) + '</strong>、跌幅 <strong>' + fmtPct(s.pct) + '</strong>：成交突然放大数倍却收跌，是典型的"放量出货"形态——热度极高但价格向下，追进大概率接盘，建议观望或回避。' };
+                }
+                return { cls: 'sig-warn', tag: '▲ 危险信号', title: '温度过热，警惕回落',
+                    text: '个股温度 <strong>' + t + '°</strong> 处于危险区（≥60°）。量比 <strong>' + s.vr.toFixed(2) + '</strong>、换手 <strong>' + s.tr.toFixed(2) + '%</strong>' + (s.vr >= 1.8 ? '，交投异常活跃' : '') + '，短期情绪过热，追高需谨慎，注意控制仓位与回撤。' };
+            }
+            if (t <= 20) {
+                if (s.vr <= 0.6 && Math.abs(s.pct) <= 1.5 && s.tr >= 0.3) {
+                    return { cls: 'sig-opp', tag: '▽ 机会信号', title: '缩量蓄势，列入观察',
+                        text: '量比仅 <strong>' + s.vr.toFixed(2) + '</strong>、波幅 <strong>' + fmtPct(s.pct) + '</strong>、换手 <strong>' + s.tr.toFixed(2) + '%</strong>：资金冷落、缩量横盘，正是机会名单的"无人问津"特征。可加入观察名单，<strong>等待放量回升确认后再介入</strong>。' };
+                }
+                return { cls: 'sig-opp', tag: '▽ 机会信号', title: '温度冰点，低温观察',
+                    text: '个股温度 <strong>' + t + '°</strong> 进入机会区（≤20°），市场情绪冷淡。低温不必然上涨，<strong>需等待量能回升（量比放大 + 跌势收窄）再作决定</strong>，冰点只代表便宜的情绪，不代表反转。' };
+            }
+            if (s.vr >= 2.2 && s.pct > 0) {
+                return { cls: 'sig-norm', tag: '● 中性偏热', title: '放量上涨，热度上升',
+                    text: '温度 <strong>' + t + '°</strong> 处于正常区，但量比 <strong>' + s.vr.toFixed(2) + '</strong> 明显放大且在涨——资金正在进场，趋势尚可，留意热度是否继续向危险区攀升。' };
+            }
+            if (s.vr >= 2.2 && s.pct < 0) {
+                return { cls: 'sig-norm', tag: '● 中性偏热', title: '放量下跌，留意演化',
+                    text: '温度 <strong>' + t + '°</strong> 处于正常区，但量比 <strong>' + s.vr.toFixed(2) + '</strong> 放大且在跌——多空分歧加大，若跌幅继续扩大并叠加量能，可能滑向"放量出货"形态。' };
+            }
+            if (s.vr < 0.7) {
+                return { cls: 'sig-norm', tag: '● 中性偏冷', title: '交投清淡，耐心等待',
+                    text: '温度 <strong>' + t + '°</strong> 处于正常区，量比仅 <strong>' + s.vr.toFixed(2) + '</strong>，交投清淡、缺乏资金关注。暂无明确信号，耐心等待量能变化。' };
+            }
+            return { cls: 'sig-norm', tag: '● 中性', title: '正常区间，暂无极端信号',
+                text: '温度 <strong>' + t + '°</strong>、量比 <strong>' + s.vr.toFixed(2) + '</strong>、换手 <strong>' + s.tr.toFixed(2) + '%</strong>，各项指标均在正常范围，按自己的计划执行即可。' };
+        }
+
+        /* ---- 查询并渲染单只股票 ---- */
+        function sqRender(s) {
+            var z = zoneOf(s.temp);
+            var sig = signalOf(s);
+            var pos = ((s.temp + 30) / 130 * 100).toFixed(1);
+            var html =
+                '<div class="sq-top">' +
+                    '<span class="sq-nm">' + esc(s.name) + '</span>' +
+                    '<span class="sq-cd">' + esc(s.code) + '</span>' +
+                    '<span class="sq-pr">' + s.price.toFixed(2) + '</span>' +
+                    '<span class="sq-pc ' + pctCls(s.pct) + '">' + fmtPct(s.pct) + '</span>' +
+                '</div>' +
+                '<div class="sq-gauge-wrap">' +
+                    '<div>' +
+                        '<div class="sq-stats">' +
+                            '<div class="sq-stat"><div class="k">量比</div><div class="v">' + s.vr.toFixed(2) + '</div></div>' +
+                            '<div class="sq-stat"><div class="k">换手率</div><div class="v">' + s.tr.toFixed(2) + '%</div></div>' +
+                            '<div class="sq-stat"><div class="k">成交额</div><div class="v">' + fmtAmount(s.amt) + '</div></div>' +
+                        '</div>' +
+                        '<div class="sq-signal ' + sig.cls + '"><div class="t">' + sig.tag + ' · ' + sig.title + '</div>' + sig.text + '</div>' +
+                    '</div>' +
+                    '<div class="sq-tempbox">' +
+                        '<div class="k" style="font-size:11.5px;color:var(--ink-faint)">个股温度</div>' +
+                        '<div class="sq-temp-read" style="color:' + z.color + '">' + s.temp + '°</div>' +
+                        '<span class="temp-chip ' + z.chip + '" style="margin-top:6px">' + z.name + '</span>' +
+                        '<div class="sq-gauge"><div class="sq-pin" style="left:' + pos + '%"></div></div>' +
+                        '<div class="sq-scale"><span>-30</span><span>20</span><span>60</span><span>100</span></div>' +
+                    '</div>' +
+                '</div>';
+            var box = $('sq-result');
+            box.innerHTML = html;
+            box.hidden = false;
+        }
+
+        function sqQuery(secid, codeFallback) {
+            var btn = $('sq-btn');
+            btn.disabled = true;
+            $('sq-suggest').hidden = true;
+            $('sq-result').hidden = false;
+            $('sq-result').innerHTML = '<div class="th-state">正在查询行情…</div>';
+            jsonp(QUOTE + secid, 8000).then(function (d) {
+                var diff = d && d.data && d.data.diff;
+                var it = diff && (Array.isArray(diff) ? diff[0] : diff[Object.keys(diff)[0]]);
+                if (!it || !num(it.f2) || !num(it.f3) || !num(it.f10) || !num(it.f8)) {
+                    throw new Error('no data');
+                }
+                var s = {
+                    code: it.f12, name: it.f14, price: it.f2, pct: it.f3,
+                    vr: it.f10, tr: it.f8, amt: num(it.f6) ? it.f6 : 0
+                };
+                s.temp = stockTemp(s);
+                sqRender(s);
+            }).catch(function () {
+                $('sq-result').innerHTML = '<div class="th-state err">⚠ 未查到该股票的行情（可能已停牌、退市或接口限流），请稍后重试。</div>';
+            }).finally(function () { btn.disabled = false; });
+        }
+
+        /* ---- 联想下拉 ---- */
+        var sqItems = [];   // 当前下拉里的候选 [{secid, code, name, market}]
+
+        function sqRenderSuggest(list, q) {
+            var box = $('sq-suggest');
+            sqItems = list;
+            if (!list.length) {
+                box.innerHTML = '<div class="sq-empty">没有匹配的 A 股，换个关键词试试</div>';
+                box.hidden = false;
+                return;
+            }
+            box.innerHTML = list.map(function (d, i) {
+                return '<div class="sq-item' + (i === 0 ? ' on' : '') + '" data-i="' + i + '">' +
+                    '<span class="nm">' + esc(d.name) + '</span><span class="cd">' + esc(d.code) + '</span>' +
+                    '<span class="mk">' + esc(d.market) + '</span></div>';
+            }).join('');
+            box.hidden = false;
+        }
+
+        function sqLocalMatch(q) {
+            return stockCache
+                .filter(function (s) {
+                    return s.code.indexOf(q) === 0 || s.name.indexOf(q) > -1;
+                })
+                .slice(0, 8)
+                .map(function (s) {
+                    return { secid: s.secid, code: s.code, name: s.name,
+                        market: /^6/.test(s.code) ? '沪A' : '深A' };
+                });
+        }
+
+        function sqSuggest(q) {
+            // 本地样本优先（自带拼音缓存的除外，样本无拼音字段则只按代码/名称）
+            var local = sqLocalMatch(q);
+            var seen = {};
+            local.forEach(function (d) { seen[d.code] = 1; });
+            // 再叠加远程联想
+            jsonp(SUGGEST + encodeURIComponent(q), 6000).then(function (d) {
+                var data = d && d.QuotationCodeTable && d.QuotationCodeTable.Data;
+                var remote = [];
+                if (data && data.length) {
+                    data.forEach(function (it) {
+                        if (!it || it.Classify !== 'AStock') return;
+                        if (it.MktNum !== '0' && it.MktNum !== '1') return;   // 仅沪深 A 股
+                        if (seen[it.Code]) return;
+                        seen[it.Code] = 1;
+                        remote.push({
+                            secid: it.MktNum + '.' + it.Code,
+                            code: it.Code, name: it.Name,
+                            market: it.SecurityTypeName || ''
+                        });
+                    });
+                }
+                var all = local.concat(remote).slice(0, 8);
+                sqRenderSuggest(all, q);
+            }).catch(function () {
+                sqRenderSuggest(local, q);
+            });
+        }
+
+        var sqDebounce = null, sqLastQ = '';
+        $('sq-input').addEventListener('input', function () {
+            var q = this.value.trim();
+            clearTimeout(sqDebounce);
+            if (!q || q === sqLastQ) { $('sq-suggest').hidden = true; return; }
+            sqDebounce = setTimeout(function () { sqLastQ = q; sqSuggest(q); }, 250);
+        });
+
+        $('sq-input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (sqItems.length) {
+                    var pick = sqItems[0];
+                    $('sq-input').value = pick.code;
+                    sqQuery(pick.secid);
+                }
+            } else if (e.key === 'Escape') {
+                $('sq-suggest').hidden = true;
+            }
+        });
+
+        $('sq-suggest').addEventListener('click', function (e) {
+            var item = e.target.closest('.sq-item');
+            if (!item) return;
+            var pick = sqItems[+item.dataset.i];
+            if (!pick) return;
+            $('sq-input').value = pick.code;
+            sqQuery(pick.secid);
+        });
+
+        $('sq-btn').addEventListener('click', function () {
+            var q = $('sq-input').value.trim();
+            if (!q) return;
+            if (sqItems.length) { sqQuery(sqItems[0].secid); return; }
+            // 无联想结果时按"纯代码"直接查询
+            if (/^\d{6}$/.test(q)) { sqQuery(secidOf(q)); return; }
+            sqSuggest(q);
+        });
+
+        // 点击页面其他地方收起联想
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.sq-search')) $('sq-suggest').hidden = true;
+        });
+
+        // 红蓝名单股票名可点击查询
+        document.addEventListener('click', function (e) {
+            var link = e.target.closest('.stock-table .s-name.link');
+            if (!link) return;
+            var code = link.dataset.code;
+            var hit = stockCache.filter(function (s) { return s.code === code; })[0];
+            var secid = hit ? hit.secid : secidOf(code);
+            $('sq-input').value = code;
+            sqQuery(secid);
+            document.querySelector('.sq-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // 主样本在 load() 内写入 stockCache（含 secid），供本地联想与名单点击查询
 
         load();
     })();

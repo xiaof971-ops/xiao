@@ -25,17 +25,17 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://meworld.me/posts/hello-world.html</loc>
+    <loc>https://meworld.me/hello-world.html</loc>
     <lastmod>2026-11-17</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://meworld.me/posts/build-blog-with-ai.html</loc>
+    <loc>https://meworld.me/build-blog-with-ai.html</loc>
     <lastmod>2026-11-17</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://meworld.me/posts/notes-on-tools.html</loc>
+    <loc>https://meworld.me/notes-on-tools.html</loc>
     <lastmod>2026-11-17</lastmod>
     <priority>0.8</priority>
   </url>
@@ -48,5 +48,10 @@
     <loc>https://meworld.me/thermometer.html</loc>
     <lastmod>2026-11-17</lastmod>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://meworld.me/maomao.html</loc>
+    <lastmod>2026-11-18</lastmod>
+    <priority>0.6</priority>
   </url>
 </urlset>
